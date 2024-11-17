@@ -1,0 +1,17 @@
+import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler";
+import { Response, Request } from "express";
+
+const healthcheck = asyncHandler(async (req: Request, res: Response) => {
+    const a = "All good man";
+    const response = new ApiResponse({
+        statusCode: 200,
+        data: a,
+        message: "Everything is alright"
+    });
+    return res
+        .status(response.statusCode)
+        .json(response);
+});
+
+export { healthcheck };
