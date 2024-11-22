@@ -1,17 +1,44 @@
-import { Input, Label, Text, View, YStack, Button } from "tamagui";
+import { Input, Text, View, YStack, Button } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import { Image } from "expo-image";
+import { useState } from "react";
+import { Dimensions } from "react-native";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 export default function OnBoarding() {
+  const [phoneInput, setPhoneInput] = useState<string>("");
+  const animatedWidth = useSharedValue(screenWidth);
+
+  const [isImageSquare, setIsImageSquare] = useState(true);
+
+  const handleContinue = () => {
+    if (isImageSquare) {
+      animatedWidth.value = withSpring(screenWidth / 2);
+    } else {
+      animatedWidth.value = withSpring(screenWidth);
+    }
+    setIsImageSquare(!isImageSquare);
+  };
+
   return (
     <View>
-      <View aspectRatio={1 / 1}>
+      {/* <View height={screenWidth / 1} width={screenWidth}> */}
+      <Animated.View
+        style={{
+          width: "100%",
+          height: animatedWidth,
+        }}
+      >
         <View position="relative">
           <View width="100%" height="100%">
             <Image
               source={require("../../assets/images/csi_image2.jpeg")}
               style={{ height: "100%", width: "100%" }}
               contentFit="cover"
+              contentPosition={"top"}
               transition={1000}
             />
           </View>
@@ -26,7 +53,7 @@ export default function OnBoarding() {
             end={[0, 1]}
           />
         </View>
-      </View>
+      </Animated.View>
 
       <View paddingHorizontal={12} gap={24}>
         <View>
@@ -38,35 +65,27 @@ export default function OnBoarding() {
 
         <YStack gap={12}>
           <View gap={4}>
-            <Label color="#fff" htmlFor="email" unstyled>
-              Email Address
-            </Label>
             <Input
+              value={phoneInput}
+              onChangeText={(text) => setPhoneInput(text)}
               backgroundColor="#000"
               borderColor="#ffffff33"
-              id="email"
-              placeholder="john.smith@gmail.com"
+              focusStyle={{ borderColor: "#ffffff80" }}
+              maxLength={10}
+              color="#fff"
+              id="phone"
+              keyboardType="phone-pad"
+              placeholder="+91 7042XXXX78"
             />
           </View>
 
-          <View gap={4}>
-            <Label color="#fff" htmlFor="password" unstyled>
-              Password
-            </Label>
-            <Input
-              backgroundColor="#000"
-              borderColor="#ffffff33"
-              id="password"
-              placeholder="Enter your password"
-            />
-            <View display="flex">
-              <Text alignSelf="flex-end" color="#3b82f6" marginRight={1}>
-                Reset Password
-              </Text>
-            </View>
-          </View>
-
-          <Button marginTop={64}>Login</Button>
+          <Button
+            opacity={phoneInput.length > 9 ? 1 : 0.6}
+            disabled={!(phoneInput.length > 9)}
+            onTouchStart={handleContinue}
+          >
+            Continue
+          </Button>
           <View
             width="100%"
             display="flex"
