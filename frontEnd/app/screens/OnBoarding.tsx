@@ -1,4 +1,4 @@
-import { Input, Text, View, YStack, Button } from "tamagui";
+import { Input, Text, View, YStack, Button, Spinner } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import { Image } from "expo-image";
 import { useState } from "react";
@@ -11,10 +11,12 @@ const screenHeight = Dimensions.get("window").height;
 export default function OnBoarding() {
   const [phoneInput, setPhoneInput] = useState<string>("");
   const animatedWidth = useSharedValue(screenWidth);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isImageSquare, setIsImageSquare] = useState(true);
 
   const handleContinue = () => {
+    setIsLoading(true); // TODO: handle this loading and show the OTP Input
     if (isImageSquare) {
       animatedWidth.value = withSpring(screenWidth / 2);
     } else {
@@ -80,10 +82,11 @@ export default function OnBoarding() {
           </View>
 
           <Button
-            opacity={phoneInput.length > 9 ? 1 : 0.6}
-            disabled={!(phoneInput.length > 9)}
+            opacity={!isLoading ? (phoneInput.length > 9 ? 1 : 0.6) : 0.6}
+            disabled={isLoading || !(phoneInput.length > 9)}
             onTouchStart={handleContinue}
           >
+            {isLoading && <Spinner size="small" color="#000" />}
             Continue
           </Button>
           <View
