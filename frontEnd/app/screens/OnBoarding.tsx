@@ -93,7 +93,7 @@ export default function OnBoarding() {
             >
               <View paddingVertical={12} width="100%">
                 <Text fontSize={16} textAlign="center" color="#fff">
-                  We've sent a varification code to
+                  We've sent a verification code to
                 </Text>
                 <Text
                   fontSize={14}
