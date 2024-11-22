@@ -1,9 +1,10 @@
 import { Input, Text, View, YStack, Button, Spinner } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import { Image } from "expo-image";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dimensions } from "react-native";
 import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+import OTPTextInput from "react-native-otp-textinput";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -58,47 +59,102 @@ export default function OnBoarding() {
       </Animated.View>
 
       <View paddingHorizontal={12} gap={24}>
-        <View>
-          <Text fontSize={24} fontWeight={700} color="#fff">
-            Welcome to CSI Innowave
-          </Text>
-          <Text color="#fff">Nurture your mind, Unite your coding</Text>
-        </View>
+        {!isLoading && (
+          <View>
+            <Text fontSize={24} fontWeight={700} color="#fff">
+              Welcome to CSI Innowave
+            </Text>
+            <Text color="#fff">Nurture your mind, Unite your coding</Text>
+          </View>
+        )}
 
         <YStack gap={12}>
-          <View gap={4}>
-            <Input
-              value={phoneInput}
-              onChangeText={(text) => setPhoneInput(text)}
-              backgroundColor="#000"
-              borderColor="#ffffff33"
-              focusStyle={{ borderColor: "#ffffff80" }}
-              maxLength={10}
-              color="#fff"
-              id="phone"
-              keyboardType="phone-pad"
-              placeholder="+91 7042XXXX78"
-            />
-          </View>
+          {!isLoading ? (
+            <View gap={4}>
+              <Input
+                value={phoneInput}
+                onChangeText={(text) => setPhoneInput(text)}
+                backgroundColor="#000"
+                borderColor="#ffffff33"
+                focusStyle={{ borderColor: "#ffffff80" }}
+                maxLength={10}
+                color="#fff"
+                id="phone"
+                keyboardType="phone-pad"
+                placeholder="+91 7042XXXX78"
+              />
+            </View>
+          ) : (
+            <View
+              display="flex"
+              gap={8}
+              justifyContent="center"
+              // marginHorizontal={64}
+            >
+              <View paddingVertical={12} width="100%">
+                <Text fontSize={16} textAlign="center" color="#fff">
+                  We've sent a varification code to
+                </Text>
+                <Text
+                  fontSize={14}
+                  textAlign="center"
+                  color="#fff"
+                  fontWeight={600}
+                >
+                  +91 {phoneInput}
+                </Text>
+              </View>
+              <OTPTextInput
+                textInputStyle={{
+                  backgroundColor: "#000",
+                  borderWidth: 0.5,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: "#ffffff33",
+                  borderRadius: 8,
+                  margin: 0,
+                  // marginBottom: 8,
+                  // width: "15%",
+                }}
+                tintColor={"#ffffff80"}
+                containerStyle={{
+                  borderColor: "#ffffff33",
+                  marginHorizontal: 64,
+                }}
+              />
+            </View>
+          )}
 
-          <Button
-            opacity={!isLoading ? (phoneInput.length > 9 ? 1 : 0.6) : 0.6}
-            disabled={isLoading || !(phoneInput.length > 9)}
-            onTouchStart={handleContinue}
-          >
-            {isLoading && <Spinner size="small" color="#000" />}
-            Continue
-          </Button>
+          {!isLoading && (
+            <Button
+              opacity={!isLoading ? (phoneInput.length > 9 ? 1 : 0.6) : 0.6}
+              disabled={isLoading || !(phoneInput.length > 9)}
+              onTouchStart={handleContinue}
+            >
+              {isLoading && <Spinner size="small" color="#000" />}
+              Continue
+            </Button>
+          )}
           <View
             width="100%"
             display="flex"
             justifyContent="center"
             flexDirection="row"
           >
-            <Text color="#ffffff66" marginRight={4}>
-              New to CSI App?
-            </Text>
-            <Text color="#3b82f6">Sign Up</Text>
+            {!isLoading ? (
+              <React.Fragment>
+                <Text color="#ffffff66" marginRight={4}>
+                  New to CSI App?
+                </Text>
+                <Text color="#3b82f6">Sign Up</Text>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Text color="#ffffff66" marginRight={4}>
+                  Resend OTP in
+                </Text>
+                <Text color="#3b82f6a1">14s</Text>
+              </React.Fragment>
+            )}
           </View>
         </YStack>
       </View>
