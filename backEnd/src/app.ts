@@ -15,7 +15,10 @@ app.use(express.urlencoded({extended: true, limit: "50mb"}))
 app.use(express.static("public"))
 
 import healthcheckRouter from "./routes/healthcheck.routes"
+import userRouter from "./routes/user.routes"
+
 
 app.use("/api/v1/healthcheck", healthcheckRouter)
+app.use("/api/v1/user", userRouter)
 
 export {app, server}
