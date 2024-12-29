@@ -64,7 +64,7 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
     const incomingRefreshToken = req.body.refreshToken;
 
     if (!incomingRefreshToken) {
-        throw new ApiError(401, "unauthorized request");
+        throw new ApiError(400, "unauthorized request");
     }
 
     try {
@@ -80,7 +80,7 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
         });
 
         if (!user) {
-            throw new ApiError(401, "Refresh token is expired or used");
+            throw new ApiError(400, "Refresh token is expired or used");
         }
 
         const { accessToken, refreshToken } =
@@ -96,7 +96,7 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
     } catch (error) {
         const errorMessage =
             (error as Error).message || "Invalid refresh token";
-        throw new ApiError(401, errorMessage);
+        throw new ApiError(400, errorMessage);
     }
 });
 
@@ -105,7 +105,7 @@ const pushNotificationToken = asyncHandler(async(req: Request, res: Response) =>
     const { pushToken } = req.body;
 
     if (!userId) {
-        throw new ApiError(401, "User not authenticated");
+        throw new ApiError(400, "User not authenticated");
     }
 
     try {
@@ -200,7 +200,7 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req.user as JwtPayload).userId;
 
     if (!userId) {
-        throw new ApiError(401, "User not authenticated");
+        throw new ApiError(400, "User not authenticated");
     }
 
     // Update the user record to clear the refresh token
