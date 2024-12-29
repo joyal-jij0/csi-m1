@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Dimensions } from "react-native";
 import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import OTPTextInput from "react-native-otp-textinput";
-
+import { router } from "expo-router";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -156,6 +156,8 @@ export default function OnBoarding() {
               </React.Fragment>
             )}
           </View>
+          <Button onPress={()=>{
+            router.replace('/screens/OnBoardingForm')}}>SignUp Form</Button>
         </YStack>
       </View>
     </View>

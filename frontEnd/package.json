@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@react-native-picker/picker": "^2.10.2",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@tamagui/config": "^1.117.0",
@@ -30,6 +31,7 @@
     "expo-linear-gradient": "~14.0.1",
     "expo-linking": "~7.0.2",
     "expo-router": "~4.0.6",
+    "expo-secure-store": "~14.0.0",
     "expo-splash-screen": "~0.29.11",
     "expo-status-bar": "~2.0.0",
     "expo-symbols": "~0.2.0",
@@ -38,6 +40,7 @@
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-hook-form": "^7.54.2",
     "react-native": "0.76.2",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-otp-textinput": "^1.1.6",
@@ -47,8 +50,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.4",
     "tailwindcss": "^3.4.15",
-    "tamagui": "^1.117.0",
-    "expo-secure-store": "~14.0.0"
+    "tamagui": "^1.117.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
