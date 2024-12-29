@@ -9,7 +9,7 @@ import { router } from "expo-router";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-export default function OnBoarding() {
+export default function Signin() {
   const [phoneInput, setPhoneInput] = useState<string>("");
   const animatedWidth = useSharedValue(screenWidth);
   const [isLoading, setIsLoading] = useState(false);
@@ -156,8 +156,6 @@ export default function OnBoarding() {
               </React.Fragment>
             )}
           </View>
-          <Button onPress={()=>{
-            router.replace('/screens/OnBoardingForm')}}>SignUp Form</Button>
         </YStack>
       </View>
     </View>
