@@ -25,4 +25,18 @@ model User {
   refreshToken   String?  @unique
   accessToken    String?  @unique
   pushToken      String?  @unique
+  profile        Profile? // Add this to complete the relation
+}
+
+// KH's code:-
+
+model Profile {
+  id       String @id @default(cuid())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String @unique
+  name     String
+  college  String
+  year     Int
+  program  String
+  branch   String
 }
