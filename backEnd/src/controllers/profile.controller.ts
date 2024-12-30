@@ -71,6 +71,17 @@ const updateProfile = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(400, "Unauthorized: Missing user information");
     }
 
+    // Input validation
+    if (
+        (name && typeof name !== "string") ||
+        (college && typeof college !== "string") ||
+        (program && typeof program !== "string") ||
+        (branch && typeof branch !== "string") ||
+        (year && (typeof year !== "number" || year <= 0))
+    ){
+        throw new ApiError(400, "Invalid input types");
+    }
+    
     // Check if the profile exists
     const existingProfile = await prisma.profile.findUnique({ where: { userId } });
     if (!existingProfile) {

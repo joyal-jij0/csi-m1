@@ -210,6 +210,7 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
         },
         data: {
             refreshToken: null,
+            accessToken: null,
         },
     });
 
