@@ -6,7 +6,17 @@ import { User } from "@prisma/client";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { prisma } from "..";
 
+const isAdminCheck = async (userId: string) => {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.isAdmin) {
+        throw new ApiError(403, "Access denied. Admins only!");
+    }
+};
+
 const createEvent = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req.user as JwtPayload).userId;
+    await isAdminCheck(userId);
+
     const {title, image, description, venue, performers, type, startsAt, endsAt, voting } = req.body; 
     console.log(req.body)
     // Input validation
@@ -56,6 +66,9 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const updateEvent = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req.user as JwtPayload).userId;
+    await isAdminCheck(userId);
+
     const {eventId} = req.params;
     const {title, image, description, venue, performers, type, startsAt, endsAt, voting } = req.body;
 
@@ -109,6 +122,9 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const deleteEvent = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req.user as JwtPayload).userId;
+    await isAdminCheck(userId);
+
     const {eventId} = req.params;
 
     //Delete event
