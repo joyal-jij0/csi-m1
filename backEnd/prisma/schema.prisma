@@ -25,7 +25,22 @@ model User {
   refreshToken   String?  @unique
   accessToken    String?  @unique
   pushToken      String?  @unique
+  isAdmin        Boolean   @default(false)
   profile        Profile? // Add this to complete the relation
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  image       String
+  description String?   
+  venue       String
+  performers  String[]  // Array of strings
+  type        String
+  startsAt    DateTime  
+  endsAt      DateTime  
+  voting      Boolean   
+  createdAt   DateTime  @default(now())
 }
 
 // KH's code:-
