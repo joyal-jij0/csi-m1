@@ -9,6 +9,8 @@ export default function Test(){
             <YStack padding="$3" gap="$3" alignItems="center">
                 <Button onPress={() => router.push('/(auth)/signin') } className="bg-white">OTP</Button>
                 <Button onPress={() => router.push('/OnBoardingForm')} className="bg-white">Onboarding Form</Button>
+                {/* <Button onPress={() => router.push('/(tabs)/vote')} className="bg-white">Onboarding Form</Button> */}
+                
             </YStack>
         </SafeAreaView>
     );

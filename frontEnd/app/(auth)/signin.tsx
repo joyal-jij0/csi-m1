@@ -17,7 +17,7 @@ export default function Signin() {
   const [isImageSquare, setIsImageSquare] = useState(true);
 
   const handleContinue = () => {
-    setIsLoading(true); // TODO: handle this loading and show the OTP Input
+    setIsLoading(true); 
     if (isImageSquare) {
       animatedWidth.value = withSpring(screenWidth / 2);
     } else {

@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function TabLayout() {
 
@@ -36,6 +37,13 @@ export default function TabLayout() {
         options={{
           title: 'Test',
           tabBarIcon: ({ color }) => <FontAwesome name="magic" size={28}  color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name='vote'
+        options={{
+          title: "Vote",
+          tabBarIcon: ({ color }) => <MaterialIcons name="how-to-vote" size={30} color={color} />
         }}
       />
       <Tabs.Screen
