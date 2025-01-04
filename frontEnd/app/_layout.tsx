@@ -58,7 +58,6 @@ function RootLayoutNav() {
         intializeAuth();
     }, [dispatch]);
 
-    // YE JISNE UNCOMMENT KIYA USKI MKC
 
     useEffect(() => {
         if (!isInitialized) {
@@ -97,10 +96,10 @@ function RootLayoutNav() {
                             name="(auth)/signin"
                             options={{ headerShown: false }}
                         />
-                        {/* <Stack.Screen
+                        <Stack.Screen
                             name="onBoardingForm"
                             options={{ headerShown: false }}
-                        /> */}
+                        />
                         <Stack.Screen
                             name="event/[id]"
                             options={{ headerShown: false }}
