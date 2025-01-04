@@ -109,7 +109,7 @@ function RootLayoutNav() {
                             options={{ headerTitle: "Profile" }}
                         />
                     </Stack>
-                    <StatusBar style="auto" />
+                    <StatusBar style="light" />
                 </ThemeProvider>
             </TamaguiProvider>
         </SafeAreaProvider>
