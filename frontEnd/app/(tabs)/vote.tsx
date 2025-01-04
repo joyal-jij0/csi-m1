@@ -37,7 +37,7 @@ export default function Vote() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <View >
                 {/* Header Section */}
                 <View style={styles.headerSection}>
                     <Text style={styles.performanceTitle}>
@@ -73,7 +73,7 @@ export default function Vote() {
                         numerous awards in local competitions.
                     </Text>
                 </View>
-            </ScrollView>
+            </View>
 
             {/* Voting Buttons */}
             <View style={styles.buttonContainer}>
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     },
     profileContainer: {
         alignItems: "center",
-        marginBottom: 25,
     },
     imageWrapper: {
         position: "relative",
@@ -192,7 +191,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 20,
         marginHorizontal: 20,
-        marginBottom: 25,
     },
     infoTitle: {
         color: "#fff",
@@ -206,12 +204,8 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     buttonContainer: {
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         paddingHorizontal: 20,
         paddingBottom: 20,
         paddingTop: 20,
