@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Text, TextInput, View, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList } from 'react-native';
-import { useForm, FieldValues } from 'react-hook-form';
+import { Text, TextInput, View, TouchableOpacity, StyleSheet, ScrollView, Modal, FlatList, Button } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
 
 interface FormData {
   name: string;
@@ -39,7 +39,6 @@ export default function SignupForm({ onBack }: SignupFormProps) {
 
   const onSubmit = (data: FormData) => {
     console.log('Form Submitted', data);
-
   };
 
   const selectYear = (year: string) => {
@@ -55,50 +54,72 @@ export default function SignupForm({ onBack }: SignupFormProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={onBack} style={styles.backButton}>
-        <Text style={styles.backText}>Back</Text>
-      </TouchableOpacity>
-
+    <ScrollView contentContainerStyle={styles.container}> 
       <View style={styles.formContainer}>
         <Text style={styles.header}>Sign Up for CSI Innowave</Text>
         <Text style={styles.subHeader}>Join our community of developers</Text>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            placeholder="Enter your full name"
-            value={control._formValues.name}
-            onChangeText={(text: string) => setValue('name', text)}
-            style={styles.input}
-            placeholderTextColor="#aaa"
+          <Controller
+            control={control}
+            name="name"
+            rules={{ required: 'Name is required' }}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter your full name"
+                onChangeText={onChange}
+                value={value}
+                style={styles.input}
+                placeholderTextColor="#aaa"
+              />
+            )}
           />
+          {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
         </View>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Email Address</Text>
-          <TextInput
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            value={control._formValues.email}
-            onChangeText={(text: string) => setValue('email', text)}
-            style={styles.input}
-            placeholderTextColor="#aaa"
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: 'Email is required',
+              pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email address' },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                onChangeText={onChange}
+                value={value}
+                style={styles.input}
+                placeholderTextColor="#aaa"
+              />
+            )}
           />
+          {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
         </View>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>College Name</Text>
-          <TextInput
-            placeholder="Enter your college"
-            value={control._formValues.college}
-            onChangeText={(text: string) => setValue('college', text)}
-            style={styles.input}
-            placeholderTextColor="#aaa"
+          <Controller
+            control={control}
+            name="college"
+            rules={{ required: 'College name is required' }}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter your college"
+                onChangeText={onChange}
+                value={value}
+                style={styles.input}
+                placeholderTextColor="#aaa"
+              />
+            )}
           />
+          {errors.college && <Text style={styles.errorText}>{errors.college.message}</Text>}
         </View>
 
-        {/* Year Dropdown */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Year</Text>
           <TouchableOpacity onPress={() => setYearModalVisible(true)} style={styles.input}>
@@ -108,7 +129,6 @@ export default function SignupForm({ onBack }: SignupFormProps) {
           </TouchableOpacity>
         </View>
 
-        {/* Gender Dropdown */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Gender</Text>
           <TouchableOpacity onPress={() => setGenderModalVisible(true)} style={styles.input}>
@@ -120,28 +140,40 @@ export default function SignupForm({ onBack }: SignupFormProps) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Program</Text>
-          <TextInput
-            placeholder="Enter your program"
-            value={control._formValues.program}
-            onChangeText={(text: string) => setValue('program', text)}
-            style={styles.input}
-            placeholderTextColor="#aaa"
+          <Controller
+            control={control}
+            name="program"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter your program"
+                onChangeText={onChange}
+                value={value}
+                style={styles.input}
+                placeholderTextColor="#aaa"
+              />
+            )}
           />
         </View>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Branch</Text>
-          <TextInput
-            placeholder="Enter your branch"
-            value={control._formValues.branch}
-            onChangeText={(text: string) => setValue('branch', text)}
-            style={styles.input}
-            placeholderTextColor="#aaa"
+          <Controller
+            control={control}
+            name="branch"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter your branch"
+                onChangeText={onChange}
+                value={value}
+                style={styles.input}
+                placeholderTextColor="#aaa"
+              />
+            )}
           />
         </View>
 
         <TouchableOpacity onPress={handleSubmit(onSubmit)} style={styles.submitButton}>
-          <Text style={styles.submitButtonText}>Create Account</Text>
+          <Text style={styles.submitButtonText}>Register</Text>
         </TouchableOpacity>
       </View>
 
@@ -297,5 +329,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  
 });
 
