@@ -33,13 +33,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="test"
-        options={{
-          title: 'Test',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="magic-staff" size={28} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name='vote'
         options={{
           title: "Vote",
@@ -51,13 +44,6 @@ export default function TabLayout() {
         options={{
           title: 'Explore',
           tabBarIcon: ({ color }) => <MaterialCommunityIcons name="compass" size={28} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle-outline" size={28} color={color} />,
         }}
       />
     </Tabs>

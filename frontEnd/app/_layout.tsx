@@ -48,6 +48,8 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
             <Stack.Screen name="(auth)/signin" options={{ headerShown: false }} />
             <Stack.Screen name="onBoardingForm" options={{ headerShown: false }} />
+            <Stack.Screen name="event/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="profile" options={{headerTitle: "Profile"}}/>
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

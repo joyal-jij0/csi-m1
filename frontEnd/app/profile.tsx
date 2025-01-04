@@ -1,6 +1,4 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, Image, ScrollView, Animated } from 'react-native'
-import { SafeAreaView } from "react-native-safe-area-context"
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
 
 interface ProfileProps {
   name: string
@@ -22,14 +20,8 @@ export default function Profile({
   imageUrl = "https://avatars.githubusercontent.com/u/131537713?v=4"
 }: ProfileProps) {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <View style={styles.headerSection}>
-          <Text style={styles.headerTitle}>Profile </Text>
-          <Text style={styles.headerSubtitle}>Academic Details</Text>
-        </View>
-
         {/* Profile Section */}
         <View style={styles.profileContainer}>
           <View style={styles.imageWrapper}>
@@ -77,36 +69,17 @@ export default function Profile({
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
     backgroundColor: '#000',
-  },
-  headerSection: {
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 28,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  headerSubtitle: {
-    color: '#FF4B8C',
-    fontSize: 16,
-    marginTop: 5,
-    fontWeight: '600',
   },
   profileContainer: {
     alignItems: 'center',
-    marginBottom: 25,
   },
   imageWrapper: {
     position: 'relative',
