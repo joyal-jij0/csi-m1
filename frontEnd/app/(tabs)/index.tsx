@@ -160,19 +160,6 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontWeight: "700",
     },
-    categories: {
-        marginBottom: 24,
-    },
-    categoryChip: {
-        backgroundColor: "rgba(255,255,255,0.1)",
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        marginRight: 8,
-    },
-    categoryText: {
-        color: "#fff",
-    },
     sectionHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -183,9 +170,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: "#FFFFFF",
         fontWeight: "600",
-    },
-    seeAll: {
-        color: "#6366f1",
     },
     eventsList: {
         gap: 16,

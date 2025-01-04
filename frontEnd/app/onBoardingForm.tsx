@@ -314,17 +314,6 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        backgroundColor: "#1a1a1a",
-    },
-    backButton: {
-        marginBottom: 16,
-    },
-    backText: {
-        color: "#007BFF",
-        fontSize: 16,
-    },
     formContainer: {
         backgroundColor: "#121212",
         padding: 20,
