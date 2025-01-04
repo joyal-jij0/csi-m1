@@ -167,6 +167,10 @@ import { Image } from "expo-image";
 import React, { useState } from "react";
 import { Platform } from "react-native";
 import { Svg, Path } from "react-native-svg";
+import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { login } from "@/redux/features/authSlice";
+import { AppDispatch } from "@/redux/store";
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -203,7 +207,35 @@ const AppleIcon = () => (
 );
 
 export default function Signin() {
+    const dispatch = useDispatch<AppDispatch>();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleSignIn = async () => {
+        setIsLoading(true);
+        setError("");
+        try {
+            dispatch(login("accesstoken", "refreshToken", "id"));
+            //TODO: Yha Onboarding Form krna replace
+            router.replace("/(tabs)");
+        } catch (error: any) {
+            if (error.response) {
+                setError(
+                    `Server error: ${
+                        error.response.data.message || error.response.statusText
+                    }`
+                );
+            } else if (error.request) {
+                setError(
+                    "No response from server. Please check your internet connection."
+                );
+            } else {
+                setError(error.message || "An error occurred during sign in");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
@@ -275,7 +307,7 @@ export default function Signin() {
                         backgroundColor="#ffffff"
                         color="#000000"
                         borderColor="#ffffff33"
-                        onPress={handleGoogleSignIn}
+                        onPress={handleSignIn}
                         disabled={isLoading}
                         opacity={isLoading ? 0.6 : 1}
                         height={45}
