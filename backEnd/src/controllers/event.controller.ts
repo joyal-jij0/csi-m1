@@ -20,7 +20,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
     const {title, image, description, venue, performers, type, startsAt, endsAt, voting } = req.body; 
     console.log(req.body)
     // Input validation
-    if (!title || !venue || !performers || !type || !startsAt || !endsAt || !voting || !image) {
+    if (!title || !venue || !performers || !type || !startsAt || !endsAt || !image || voting === undefined) {
         throw new ApiError(400, "All fields (title, venue, performers, type, startsAt, endsAt, voting) except (description) are required");
     }
    
