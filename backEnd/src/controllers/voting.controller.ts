@@ -50,11 +50,15 @@ const submitVote = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req.user as JwtPayload).userId;
     const vote: boolean = req.body.vote;
 
+    if (typeof vote !== 'boolean') {
+        throw new ApiError(400, "Invalid vote value. Must be a boolean.");
+    }
+
     // checking if voting is still active
     const secondsLeft = Math.max(countdowns[performanceId] || 0, 0);
 
     if (secondsLeft <= 0) {
-        return res.status(403).json({ error: "Voting has either ended or not started yet. Your vote was not submitted." });
+        throw new ApiError(403, "Voting has ended for this performance.");
     }
 
     const data = await prisma.performance.findUnique({
@@ -65,10 +69,10 @@ const submitVote = asyncHandler(async (req: Request, res: Response) => {
     });
     
     if (!data) {
-        return res.status(404).json({ error: "Performance not found." });
+        throw new ApiError(404, "Performance not found.");
     }
     if (data.votes.length > 0) {
-        return res.status(403).json({ error: "You have already voted for this performance." });
+        throw new ApiError(403, "You have already voted for this performance.");
     }
     
     await prisma.vote.create({
