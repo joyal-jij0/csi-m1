@@ -27,6 +27,8 @@ model User {
   pushToken      String?  @unique
   isAdmin        Boolean   @default(false)
   profile        Profile? // Add this to complete the relation
+  createdAt      DateTime @default(now())
+  votes          Vote[]
 }
 
 model Event {
@@ -41,6 +43,32 @@ model Event {
   endsAt      DateTime  
   voting      Boolean   
   createdAt   DateTime  @default(now())
+  performances Performance[]
+}
+
+model Performance {
+  id         String    @id @default(cuid())
+  name       String
+  startTime  DateTime?
+  performers String[]
+  image      String?
+  eventId    String 
+  event      Event @relation(fields: [eventId], references: [id])
+
+  votingStarted  Boolean @default(false)
+  votingStartedAt DateTime?
+  votingDuration Int?
+  votes          Vote[]
+}
+
+model Vote {
+  id            Int         @id @default(autoincrement())
+  performanceId String
+  userId        String
+  vote          Boolean
+  createdAt     DateTime    @default(now())
+  performance   Performance @relation(fields: [performanceId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
 }
 
 // KH's code:-
