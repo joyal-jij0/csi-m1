@@ -217,5 +217,75 @@ const getEvents = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+// getTopThreeOfParticularEvent controller -> naming it getTopThree
+const getTopThree = async (req: any, res: any) => {
+    // If its not the admin hitting this route, give error. -> No! This result should be available to every user.
+    // const userId = (req.user as JwtPayload).userId;
+    // await isAdminCheck(userId);
 
-export {createEvent, updateEvent, deleteEvent, getEvent, getEvents}
+  const { eventId } = req.params;
+
+  if (!eventId) {
+    return res.status(400).json({ error: 'Event ID is required.' });
+  }
+
+  try {
+    // Query performances and aggregate true and false vote counts in a single database call
+    const performances = await prisma.performance.findMany({
+      where: { eventId },
+      include: {
+        _count: {
+          select: {
+            votes: true, // Total votes
+          },
+        },
+        votes: {
+          select: {
+            vote: true,
+          },
+        },
+      },
+    });
+
+    // If no performances are found for the event, return an error
+    if (performances.length === 0) {
+      return res.status(404).json({ error: 'Event or performances not found.' });
+    }
+
+    // Compute rankings with trueVotes and falseVotes
+    const rankings = performances
+      .map((performance) => {
+        const trueVotes = performance.votes.filter((vote) => vote.vote === true).length;
+        const falseVotes = performance.votes.filter((vote) => vote.vote === false).length;
+
+        return {
+          id: performance.id,
+          name: performance.name,
+          trueVotes,
+          falseVotes,
+        };
+      })
+      .sort((a, b) => {
+        // Sort by true votes descending, then by false votes ascending
+        if (b.trueVotes !== a.trueVotes) {
+          return b.trueVotes - a.trueVotes;
+        }
+        return a.falseVotes - b.falseVotes;
+      });
+
+    // Get the top 3 performances
+    const topThree = rankings.slice(0, 3);
+
+    return res.status(200).json({
+      message: 'Top 3 performances for the event retrieved successfully.',
+      topThree,
+    });
+  } catch (error) {
+    console.error('Error fetching top 3 performances:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+
+
+export {createEvent, updateEvent, deleteEvent, getEvent, getEvents, getTopThree}
