@@ -2,10 +2,11 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 export default function TabLayout() {
 
@@ -28,21 +29,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="home" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="test"
+        name='vote'
         options={{
-          title: 'Test',
-          tabBarIcon: ({ color }) => <FontAwesome name="magic" size={28}  color={color} />,
+          title: "Vote",
+          tabBarIcon: ({ color }) => <MaterialIcons name="how-to-vote" size={30} color={color} />
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="compass" size={28} color={color} />,
         }}
       />
     </Tabs>
