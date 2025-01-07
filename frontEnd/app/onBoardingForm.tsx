@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface FormData {
     name: string;
@@ -79,243 +80,267 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     };
 
     return (
-        <SafeAreaView>
-            <ScrollView>
-                <KeyboardAvoidingView>
-                    <View style={styles.formContainer}>
-                        <Text style={styles.header}>
-                            Sign Up for CSI Innowave
-                        </Text>
-                        <Text style={styles.subHeader}>
-                            Join our community of developers
-                        </Text>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Full Name</Text>
-                            <Controller
-                                control={control}
-                                name="name"
-                                rules={{ required: "Name is required" }}
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        placeholder="Enter your full name"
-                                        onChangeText={onChange}
-                                        value={value}
-                                        style={styles.input}
-                                        placeholderTextColor="#aaa"
-                                    />
-                                )}
-                            />
-                            {errors.name && (
-                                <Text style={styles.errorText}>
-                                    {errors.name.message}
-                                </Text>
-                            )}
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email Address</Text>
-                            <Controller
-                                control={control}
-                                name="email"
-                                rules={{
-                                    required: "Email is required",
-                                    pattern: {
-                                        value: /^\S+@\S+\.\S+$/,
-                                        message: "Invalid email address",
-                                    },
-                                }}
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        placeholder="Enter your email"
-                                        keyboardType="email-address"
-                                        onChangeText={onChange}
-                                        value={value}
-                                        style={styles.input}
-                                        placeholderTextColor="#aaa"
-                                    />
-                                )}
-                            />
-                            {errors.email && (
-                                <Text style={styles.errorText}>
-                                    {errors.email.message}
-                                </Text>
-                            )}
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>College Name</Text>
-                            <Controller
-                                control={control}
-                                name="college"
-                                rules={{ required: "College name is required" }}
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        placeholder="Enter your college"
-                                        onChangeText={onChange}
-                                        value={value}
-                                        style={styles.input}
-                                        placeholderTextColor="#aaa"
-                                    />
-                                )}
-                            />
-                            {errors.college && (
-                                <Text style={styles.errorText}>
-                                    {errors.college.message}
-                                </Text>
-                            )}
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Year</Text>
-                            <TouchableOpacity
-                                onPress={() => setYearModalVisible(true)}
-                                style={styles.input}
-                            >
-                                <Text
-                                    style={[
-                                        styles.placeholderText,
-                                        selectedYear ? { color: "#fff" } : null,
-                                    ]}
-                                >
-                                    {selectedYear || "Select Year"}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Gender</Text>
-                            <TouchableOpacity
-                                onPress={() => setGenderModalVisible(true)}
-                                style={styles.input}
-                            >
-                                <Text
-                                    style={[
-                                        styles.placeholderText,
-                                        selectedGender
-                                            ? { color: "#fff" }
-                                            : null,
-                                    ]}
-                                >
-                                    {selectedGender || "Select Gender"}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Program</Text>
-                            <Controller
-                                control={control}
-                                name="program"
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        placeholder="Enter your program"
-                                        onChangeText={onChange}
-                                        value={value}
-                                        style={styles.input}
-                                        placeholderTextColor="#aaa"
-                                    />
-                                )}
-                            />
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Branch</Text>
-                            <Controller
-                                control={control}
-                                name="branch"
-                                render={({ field: { onChange, value } }) => (
-                                    <TextInput
-                                        placeholder="Enter your branch"
-                                        onChangeText={onChange}
-                                        value={value}
-                                        style={styles.input}
-                                        placeholderTextColor="#aaa"
-                                    />
-                                )}
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            onPress={handleSubmit(onSubmit)}
-                            style={styles.submitButton}
-                        >
-                            <Text style={styles.submitButtonText}>
-                                Register
+        <LinearGradient
+            colors={["#000000", "#271146"]}
+            style={{ flex: 1 }}
+            locations={[0, 0.99]}
+        >
+            <SafeAreaView>
+                <ScrollView>
+                    <KeyboardAvoidingView>
+                        <View style={styles.formContainer}>
+                            <Text style={styles.header}>
+                                Sign Up for CSI Innowave
                             </Text>
-                        </TouchableOpacity>
-                    </View>
+                            <Text style={styles.subHeader}>
+                                Join our community of developers
+                            </Text>
 
-                    {/* Year Modal */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={yearModalVisible}
-                        onRequestClose={() => setYearModalVisible(false)}
-                    >
-                        <View style={styles.modalView}>
-                            <FlatList
-                                data={yearOptions}
-                                keyExtractor={(item) => item}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                        onPress={() => selectYear(item)}
-                                        style={styles.modalItem}
-                                    >
-                                        <Text style={styles.modalItemText}>
-                                            {item}
-                                        </Text>
-                                    </TouchableOpacity>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Full Name</Text>
+                                <Controller
+                                    control={control}
+                                    name="name"
+                                    rules={{ required: "Name is required" }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your full name"
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                        />
+                                    )}
+                                />
+                                {errors.name && (
+                                    <Text style={styles.errorText}>
+                                        {errors.name.message}
+                                    </Text>
                                 )}
-                            />
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Email Address</Text>
+                                <Controller
+                                    control={control}
+                                    name="email"
+                                    rules={{
+                                        required: "Email is required",
+                                        pattern: {
+                                            value: /^\S+@\S+\.\S+$/,
+                                            message: "Invalid email address",
+                                        },
+                                    }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your email"
+                                            keyboardType="email-address"
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                        />
+                                    )}
+                                />
+                                {errors.email && (
+                                    <Text style={styles.errorText}>
+                                        {errors.email.message}
+                                    </Text>
+                                )}
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>College Name</Text>
+                                <Controller
+                                    control={control}
+                                    name="college"
+                                    rules={{
+                                        required: "College name is required",
+                                    }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your college"
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                        />
+                                    )}
+                                />
+                                {errors.college && (
+                                    <Text style={styles.errorText}>
+                                        {errors.college.message}
+                                    </Text>
+                                )}
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Year</Text>
+                                <TouchableOpacity
+                                    onPress={() => setYearModalVisible(true)}
+                                    style={styles.input}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.placeholderText,
+                                            selectedYear
+                                                ? { color: "#fff" }
+                                                : null,
+                                        ]}
+                                    >
+                                        {selectedYear || "Select Year"}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Gender</Text>
+                                <TouchableOpacity
+                                    onPress={() => setGenderModalVisible(true)}
+                                    style={styles.input}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.placeholderText,
+                                            selectedGender
+                                                ? { color: "#fff" }
+                                                : null,
+                                        ]}
+                                    >
+                                        {selectedGender || "Select Gender"}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Program</Text>
+                                <Controller
+                                    control={control}
+                                    name="program"
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your program"
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                        />
+                                    )}
+                                />
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Branch</Text>
+                                <Controller
+                                    control={control}
+                                    name="branch"
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your branch"
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                        />
+                                    )}
+                                />
+                            </View>
+
                             <TouchableOpacity
-                                onPress={() => setYearModalVisible(false)}
-                                style={styles.modalCloseButton}
+                                onPress={handleSubmit(onSubmit)}
+                                style={styles.submitButton}
                             >
-                                <Text style={styles.modalCloseText}>Close</Text>
+                                <Text style={styles.submitButtonText}>
+                                    Register
+                                </Text>
                             </TouchableOpacity>
                         </View>
-                    </Modal>
 
-                    {/* Gender Modal */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={genderModalVisible}
-                        onRequestClose={() => setGenderModalVisible(false)}
-                    >
-                        <View style={styles.modalView}>
-                            <FlatList
-                                data={genderOptions}
-                                keyExtractor={(item) => item}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                        onPress={() => selectGender(item)}
-                                        style={styles.modalItem}
-                                    >
-                                        <Text style={styles.modalItemText}>
-                                            {item}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            />
-                            <TouchableOpacity
-                                onPress={() => setGenderModalVisible(false)}
-                                style={styles.modalCloseButton}
-                            >
-                                <Text style={styles.modalCloseText}>Close</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Modal>
-                </KeyboardAvoidingView>
-            </ScrollView>
-        </SafeAreaView>
+                        {/* Year Modal */}
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={yearModalVisible}
+                            onRequestClose={() => setYearModalVisible(false)}
+                        >
+                            <View style={styles.modalView}>
+                                <FlatList
+                                    data={yearOptions}
+                                    keyExtractor={(item) => item}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            onPress={() => selectYear(item)}
+                                            style={styles.modalItem}
+                                        >
+                                            <Text style={styles.modalItemText}>
+                                                {item}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => setYearModalVisible(false)}
+                                    style={styles.modalCloseButton}
+                                >
+                                    <Text style={styles.modalCloseText}>
+                                        Close
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+
+                        {/* Gender Modal */}
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={genderModalVisible}
+                            onRequestClose={() => setGenderModalVisible(false)}
+                        >
+                            <View style={styles.modalView}>
+                                <FlatList
+                                    data={genderOptions}
+                                    keyExtractor={(item) => item}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            onPress={() => selectGender(item)}
+                                            style={styles.modalItem}
+                                        >
+                                            <Text style={styles.modalItemText}>
+                                                {item}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => setGenderModalVisible(false)}
+                                    style={styles.modalCloseButton}
+                                >
+                                    <Text style={styles.modalCloseText}>
+                                        Close
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+                    </KeyboardAvoidingView>
+                </ScrollView>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     formContainer: {
-        backgroundColor: "#121212",
+        // backgroundColor: "#121212",
         padding: 20,
         borderRadius: 10,
         borderWidth: 1,

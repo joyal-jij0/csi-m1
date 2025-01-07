@@ -1,7 +1,3 @@
-// Required for tailwind CSS
-import "../global.css";
-// Requirement ends
-
 import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";

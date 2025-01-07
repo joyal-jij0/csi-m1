@@ -5,11 +5,11 @@ import {
     Image,
     TouchableOpacity,
     StyleSheet,
-    ScrollView,
     Animated,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Vote() {
     const [scaleValue] = useState(new Animated.Value(1));
@@ -36,95 +36,101 @@ export default function Vote() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View >
-                {/* Header Section */}
-                <View style={styles.headerSection}>
-                    <Text style={styles.performanceTitle}>
-                        Dance Performance
-                    </Text>
-                    <Text style={styles.performanceSubtitle}>Live Now</Text>
-                </View>
-
-                {/* Profile Section */}
-                <View style={styles.profileContainer}>
-                    <View style={styles.imageWrapper}>
-                        <Image
-                            source={{
-                                uri: "https://avatars.githubusercontent.com/u/131537713?v=4",
-                            }}
-                            style={styles.profileImage}
-                        />
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>#1</Text>
-                        </View>
+        <LinearGradient
+            colors={["#000000", "#271146"]}
+            style={{ flex: 1 }}
+            locations={[0, 0.99]}
+        >
+            <SafeAreaView style={styles.container}>
+                <View>
+                    {/* Header Section */}
+                    <View style={styles.headerSection}>
+                        <Text style={styles.performanceTitle}>
+                            Dance Performance
+                        </Text>
+                        <Text style={styles.performanceSubtitle}>Live Now</Text>
                     </View>
-                    <Text style={styles.name}>Adarshs</Text>
-                    <Text style={styles.category}>Contemporary_Dance</Text>
+
+                    {/* Profile Section */}
+                    <View style={styles.profileContainer}>
+                        <View style={styles.imageWrapper}>
+                            <Image
+                                source={{
+                                    uri: "https://avatars.githubusercontent.com/u/131537713?v=4",
+                                }}
+                                style={styles.profileImage}
+                            />
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>#1</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.name}>Adarshs</Text>
+                        <Text style={styles.category}>Contemporary_Dance</Text>
+                    </View>
+
+                    {/* Contestant Information */}
+                    <View style={styles.infoCard}>
+                        <Text style={styles.infoTitle}>About Performance</Text>
+                        <Text style={styles.infoText}>
+                            John Doe is a talented performer known for his
+                            outstanding dance moves and creative choreography.
+                            He has been performing for over 5 years and has won
+                            numerous awards in local competitions.
+                        </Text>
+                    </View>
                 </View>
 
-                {/* Contestant Information */}
-                <View style={styles.infoCard}>
-                    <Text style={styles.infoTitle}>About Performance</Text>
-                    <Text style={styles.infoText}>
-                        John Doe is a talented performer known for his
-                        outstanding dance moves and creative choreography. He
-                        has been performing for over 5 years and has won
-                        numerous awards in local competitions.
-                    </Text>
+                {/* Voting Buttons */}
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        onPress={() => handleVotePress("yes")}
+                        activeOpacity={0.8}
+                    >
+                        <Animated.View
+                            style={[
+                                styles.voteButton,
+                                styles.yesButton,
+                                { transform: [{ scale: scaleValue }] },
+                            ]}
+                        >
+                            <MaterialCommunityIcons
+                                name="thumb-up"
+                                size={24}
+                                color="#fff"
+                            />
+                            <Text style={styles.buttonText}>Vote Yes</Text>
+                        </Animated.View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => handleVotePress("no")}
+                        activeOpacity={0.8}
+                    >
+                        <Animated.View
+                            style={[
+                                styles.voteButton,
+                                styles.noButton,
+                                { transform: [{ scale: scaleValue }] },
+                            ]}
+                        >
+                            <MaterialCommunityIcons
+                                name="thumb-down"
+                                size={24}
+                                color="#fff"
+                            />
+                            <Text style={styles.buttonText}>Vote No</Text>
+                        </Animated.View>
+                    </TouchableOpacity>
                 </View>
-            </View>
-
-            {/* Voting Buttons */}
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    onPress={() => handleVotePress("yes")}
-                    activeOpacity={0.8}
-                >
-                    <Animated.View
-                        style={[
-                            styles.voteButton,
-                            styles.yesButton,
-                            { transform: [{ scale: scaleValue }] },
-                        ]}
-                    >
-                        <MaterialCommunityIcons
-                            name="thumb-up"
-                            size={24}
-                            color="#fff"
-                        />
-                        <Text style={styles.buttonText}>Vote Yes</Text>
-                    </Animated.View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => handleVotePress("no")}
-                    activeOpacity={0.8}
-                >
-                    <Animated.View
-                        style={[
-                            styles.voteButton,
-                            styles.noButton,
-                            { transform: [{ scale: scaleValue }] },
-                        ]}
-                    >
-                        <MaterialCommunityIcons
-                            name="thumb-down"
-                            size={24}
-                            color="#fff"
-                        />
-                        <Text style={styles.buttonText}>Vote No</Text>
-                    </Animated.View>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 15
+        paddingTop: 15,
     },
     headerSection: {
         paddingHorizontal: 20,
@@ -187,7 +193,8 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     infoCard: {
-        backgroundColor: "rgba(255,255,255,0.05)",
+        // backgroundColor: "rgba(255,255,255,0.05)",
+        backgroundColor: "#000",
         borderRadius: 20,
         padding: 20,
         marginHorizontal: 20,
@@ -209,7 +216,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 20,
         paddingTop: 20,
-        backgroundColor: "rgba(0,0,0,0.8)",
+        // backgroundColor: "rgba(0,0,0,0.8)",
     },
     voteButton: {
         flexDirection: "row",

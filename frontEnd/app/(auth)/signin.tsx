@@ -171,6 +171,7 @@ import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/features/authSlice";
 import { AppDispatch } from "@/redux/store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -260,80 +261,88 @@ export default function Signin() {
     };
 
     return (
-        <View>
-            <View
-                style={{
-                    width: "100%",
-                    height: "60%",
-                }}
-            >
-                <View position="relative">
-                    <View width="100%" height="100%">
-                        <Image
-                            source={require("../../assets/images/csi_image2.jpeg")}
-                            style={{ height: "100%", width: "100%" }}
-                            contentFit="cover"
-                            contentPosition={"top"}
-                            transition={1000}
+        <LinearGradient
+            colors={["#000000", "#271146"]}
+            style={{ flex: 1 }}
+            locations={[0, 0.99]}
+        >
+            <SafeAreaView>
+                <View
+                    style={{
+                        width: "100%",
+                        height: "60%",
+                    }}
+                >
+                    <View position="relative">
+                        <View width="100%" height="100%">
+                            <Image
+                                source={require("../../assets/images/csi_image2.jpeg")}
+                                style={{ height: "100%", width: "100%" }}
+                                contentFit="cover"
+                                contentPosition={"top"}
+                                transition={1000}
+                            />
+                        </View>
+                        <LinearGradient
+                            position="absolute"
+                            left={0}
+                            bottom={0}
+                            height="100%"
+                            width="100%"
+                            colors={["#00000000", "#000000"]}
+                            start={[0, 0]}
+                            end={[0, 1]}
                         />
                     </View>
-                    <LinearGradient
-                        position="absolute"
-                        left={0}
-                        bottom={0}
-                        height="100%"
-                        width="100%"
-                        colors={["#00000000", "#000000"]}
-                        start={[0, 0]}
-                        end={[0, 1]}
-                    />
-                </View>
-            </View>
-
-            <View paddingHorizontal={12} gap={24}>
-                <View>
-                    <Text fontSize={24} fontWeight={700} color="#fff">
-                        Welcome to CSI Innowave
-                    </Text>
-                    <Text color="#fff">
-                        Nurture your mind, Unite your coding
-                    </Text>
                 </View>
 
-                <YStack gap={12}>
-                    <Button
-                        icon={GoogleIcon}
-                        theme="dark"
-                        backgroundColor="#ffffff"
-                        color="#000000"
-                        borderColor="#ffffff33"
-                        onPress={handleSignIn}
-                        disabled={isLoading}
-                        opacity={isLoading ? 0.6 : 1}
-                        height={45}
-                    >
-                        {isLoading ? "Signing in..." : "Continue with Google"}
-                    </Button>
+                <View paddingHorizontal={12} gap={24}>
+                    <View>
+                        <Text fontSize={24} fontWeight={700} color="#fff">
+                            Welcome to CSI Innowave
+                        </Text>
+                        <Text color="#fff">
+                            Nurture your mind, Unite your coding
+                        </Text>
+                    </View>
 
-                    {Platform.OS === "ios" && (
+                    <YStack gap={12}>
                         <Button
-                            icon={AppleIcon}
+                            icon={GoogleIcon}
                             theme="dark"
-                            backgroundColor="#000000"
-                            color="#ffffff"
+                            backgroundColor="#ffffff"
+                            color="#000000"
                             borderColor="#ffffff33"
-                            onPress={handleAppleSignIn}
+                            onPress={handleSignIn}
                             disabled={isLoading}
                             opacity={isLoading ? 0.6 : 1}
                             height={45}
                         >
                             {isLoading
                                 ? "Signing in..."
-                                : "Continue with Apple"}
+                                : "Continue with Google"}
                         </Button>
-                    )}
-                </YStack>
-            </View>
-        </View>
+
+                        {Platform.OS === "ios" && (
+                            <Button
+                                icon={AppleIcon}
+                                theme="dark"
+                                backgroundColor="#000000"
+                                color="#ffffff"
+                                borderColor="#ffffff33"
+                                onPress={handleAppleSignIn}
+                                disabled={isLoading}
+                                opacity={isLoading ? 0.6 : 1}
+                                height={45}
+                            >
+                                {isLoading
+                                    ? "Signing in..."
+                                    : "Continue with Apple"}
+                            </Button>
+                        )}
+                    </YStack>
+                </View>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }

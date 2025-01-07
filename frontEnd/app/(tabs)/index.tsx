@@ -5,7 +5,8 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { HelloWave } from "@/components/HelloWave";
+import { Button } from "tamagui";
+import {Activity} from "lucide-react-native"
 
 interface Event {
     id: string;
@@ -85,36 +86,28 @@ export default function HomeScreen() {
     );
 
     return (
+        <LinearGradient
+        colors={["#000000", "#271146"]}
+        style={{ flex: 1 }}
+        locations={[0, 0.99]}
+    >
         <SafeAreaView style={styles.container}>
-            <LinearGradient
-                colors={["#000000", "#1a1a1a", "#262626"]}
-                style={styles.background}
-            >
-                <MotiView
-                    style={[StyleSheet.absoluteFill, styles.animatedBg]}
-                    animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.3, 0.2, 0.3],
-                    }}
-                    transition={{
-                        loop: true,
-                        duration: 3000,
-                    }}
-                />
-
                 <View style={styles.header}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.greeting}> Hello Ashish </Text>
-                        <HelloWave/>
+                        <Image
+                            source={require('@/assets/images/icon.png')}
+                            style={styles.logo}
+                            resizeMode="contain"
+                        />
                     </View>
                     <TouchableOpacity onPress={() => router.push('/profile')}>
                         <MaterialCommunityIcons name="account-circle-outline" size={40} color="white" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>
-                        Live Events
-                    </Text>
+                    <Button iconAfter={Activity} variant="outlined" style={styles.sectionTitle}>
+                        Events
+                    </Button>
                 </View>
 
                 <FlatList
@@ -124,25 +117,16 @@ export default function HomeScreen() {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.eventsList}
                 />
-            </LinearGradient>
         </SafeAreaView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#000",
-    },
-    background: {
-        flex: 1,
+        backgroundColor: "transparent",
         paddingHorizontal: 16,
-    },
-    animatedBg: {
-        backgroundColor: "#6366f1",
-        opacity: 0.2,
-        borderRadius: 70,
-        transform: [{ scale: 2 }],
     },
     header: {
         flexDirection: 'row',
@@ -167,7 +151,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     sectionTitle: {
-        fontSize: 24,
+        fontSize: 20,
         color: "#FFFFFF",
         fontWeight: "600",
     },
@@ -229,6 +213,10 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         opacity: 0.7,
     },
+    logo: {
+        width: 60,
+        height: 40
+    }
 });
 
 const DUMMY_EVENTS: Event[] = [
