@@ -5,8 +5,6 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Button } from "tamagui";
-import {Activity} from "lucide-react-native"
 
 interface Event {
     id: string;
@@ -104,12 +102,13 @@ export default function HomeScreen() {
                         <MaterialCommunityIcons name="account-circle-outline" size={40} color="white" />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.sectionHeader}>
-                    {/* <Button iconAfter={Activity} variant="outlined"  style={styles.sectionTitle}>
+                
+                {/* <View style={styles.sectionHeader}>
+                    <Button iconAfter={Activity} variant="outlined"  style={styles.sectionTitle}>
                         Events
-                    </Button> */}
+                    </Button>
                     <Text style={styles.sectionTitle}>Events</Text>
-                </View>
+                </View> */}
 
                 <FlatList
                     data={DUMMY_EVENTS}
