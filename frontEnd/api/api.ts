@@ -1,5 +1,7 @@
-import axios from "axios"
-import * as SecureStore from 'expo-secure-store'
+import axios from "axios";
+
+import * as SecureStore from "expo-secure-store";
+
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -7,26 +9,27 @@ const USER_ID_KEY = "userId";
 
 const api = axios.create({
     baseURL: process.env.EXPO_PUBLIC_BASE_URL,
-    headers:{
+    headers: {
         'Accept': 'application/json'
     }
-})
+});
 
-export const storeTokens = async(
+export const storeTokens = async (
     accessToken: string,
     refreshToken: string
 ) => {
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
-}
+};
 
-export const storeUserId = async(userId: string) => {
+export const storeUserId = async (userId: string) => {
     await SecureStore.setItemAsync(USER_ID_KEY, userId);
-}
+};
+
 
 export const getAccessToken = async () => {
-    return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-}
+    return await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+};
 
 export const getRefreshToken = async () => {
     return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);

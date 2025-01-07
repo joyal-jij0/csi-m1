@@ -2,14 +2,14 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import {Request, Response} from "express"
-import { User } from "@prisma/client";
+import { $Enums, User } from "@prisma/client";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { prisma } from "..";
 
 // profile creation controller:-
 
 const createProfile = asyncHandler(async (req: Request, res: Response) => {
-    const { name, college, year, program, branch } = req.body;
+    const { name, college, year, program, branch, email, gender } = req.body;
 
     // Extract userId from req.user
     const userId = (req.user as JwtPayload).userId;
@@ -23,7 +23,7 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(400, "All fields (name, college, year, program, branch) are required");
     }
 
-    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string") {
+    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string" || typeof email !== "string" || typeof gender !== "string") {
         throw new ApiError(400, "Invalid input types");
     }
 
@@ -41,11 +41,13 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
     const profile = await prisma.profile.create({
         data: {
             userId,
-            name,
-            college,
+            name: name.toLowerCase(),
+            college: college.toLowerCase(),
             year,
-            program,
-            branch,
+            program: program.toLowerCase(),
+            branch: branch.toLowerCase(),
+            email: email.toLowerCase(),
+            gender: gender.toLowerCase() as $Enums.Gender,
         },
     });
 

@@ -172,6 +172,7 @@ import { useDispatch } from "react-redux";
 import { login } from "@/redux/features/authSlice";
 import { AppDispatch } from "@/redux/store";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "@/api/api";
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -216,7 +217,19 @@ export default function Signin() {
         setIsLoading(true);
         setError("");
         try {
-            dispatch(login("accesstoken", "refreshToken", "id"));
+            const response = await api.post("/user/signIn", {
+                phone: "9999999999",
+                password: "123"
+            })
+            
+            const { data } = response
+
+            const {accessToken, refreshToken, id } = data.data;
+
+            console.log(accessToken, refreshToken, id)
+
+            dispatch(login(accessToken, refreshToken, id))
+
             //TODO: Yha Onboarding Form krna replace
             router.replace("/(tabs)");
         } catch (error: any) {

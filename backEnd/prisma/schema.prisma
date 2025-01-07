@@ -4,8 +4,14 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+enum Gender {
+  male
+  female
+  other
+}
+
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -21,29 +27,29 @@ model HealthCheck {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  phone          String   @unique 
-  refreshToken   String?  @unique
-  accessToken    String?  @unique
-  pushToken      String?  @unique
-  isAdmin        Boolean   @default(false)
-  profile        Profile? // Add this to complete the relation
-  createdAt      DateTime @default(now())
-  votes          Vote[]
+  id           String   @id @default(cuid())
+  phone        String   @unique
+  refreshToken String?  @unique
+  accessToken  String?  @unique
+  pushToken    String?  @unique
+  isAdmin      Boolean  @default(false)
+  profile      Profile? // Add this to complete the relation
+  createdAt    DateTime @default(now())
+  votes        Vote[]
 }
 
 model Event {
-  id          String    @id @default(cuid())
-  title       String
-  image       String
-  description String?   
-  venue       String
-  performers  String[]  // Array of strings
-  type        String
-  startsAt    DateTime  
-  endsAt      DateTime  
-  voting      Boolean   
-  createdAt   DateTime  @default(now())
+  id           String        @id @default(cuid())
+  title        String
+  image        String
+  description  String?
+  venue        String
+  performers   String[] // Array of strings
+  type         String
+  startsAt     DateTime
+  endsAt       DateTime
+  voting       Boolean
+  createdAt    DateTime      @default(now())
   performances Performance[]
 }
 
@@ -53,13 +59,13 @@ model Performance {
   startTime  DateTime?
   performers String[]
   image      String?
-  eventId    String 
-  event      Event @relation(fields: [eventId], references: [id])
+  eventId    String
+  event      Event     @relation(fields: [eventId], references: [id])
 
-  votingStarted  Boolean @default(false)
+  votingStarted   Boolean   @default(false)
   votingStartedAt DateTime?
-  votingDuration Int?
-  votes          Vote[]
+  votingDuration  Int?
+  votes           Vote[]
 }
 
 model Vote {
@@ -75,12 +81,14 @@ model Vote {
 // KH's code:-
 
 model Profile {
-  id       String @id @default(cuid())
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String @unique
-  name     String
-  college  String
-  year     Int
-  program  String
-  branch   String
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String @unique
+  name    String
+  college String
+  year    Int
+  program String
+  branch  String
+  email   String
+  gender  Gender
 }

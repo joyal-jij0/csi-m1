@@ -12,6 +12,5 @@ router.route("/logout").post(verifyJWT,logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
 
 router.route("/update-push-token").post(verifyJWT, pushNotificationToken)
-router.route("/logout").post(logoutUser);
 
 export default router

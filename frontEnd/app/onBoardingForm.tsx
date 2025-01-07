@@ -14,6 +14,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import api from "@/api/api";
 
 interface FormData {
     name: string;
@@ -54,6 +55,8 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
         useState<boolean>(false);
     const [selectedYear, setSelectedYear] = useState<string>("");
     const [selectedGender, setSelectedGender] = useState<string>("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("")
 
     const yearOptions: string[] = [
         "1st Year",
@@ -63,8 +66,29 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     ];
     const genderOptions: string[] = ["Male", "Female", "Other"];
 
-    const onSubmit = (data: FormData) => {
-        console.log("Form Submitted", data);
+    const onSubmit = async (data: FormData) => {
+        setLoading(true);
+        setError("");
+        try {
+            const transformedData = {
+                ...data,
+                year: parseInt(data.year, 10), // Convert year string like "1st Year" to a number
+                name: data.name.trim().toLowerCase(),
+                college: data.college.trim().toLowerCase(),
+                program: data.program.trim().toLowerCase(),
+                branch: data.branch.trim().toLowerCase(),
+                email: data.email.trim().toLowerCase(),
+                gender: data.gender.trim().toLowerCase(),
+            };
+            const response = await api.post("/profile/create/", transformedData);
+            // const response = await api.get("/healthcheck/")
+            console.log(response)
+        } catch (error: any) {
+            setError(error.response?.data.message || "An error occurred")
+            console.error("Error creating profile: ", error)
+        } finally {
+            setLoading(false);
+        }
     };
 
     const selectYear = (year: string) => {
