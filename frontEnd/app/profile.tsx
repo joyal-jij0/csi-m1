@@ -101,8 +101,8 @@ const styles = StyleSheet.create({
         width: 140,
         height: 140,
         borderRadius: 70,
-        borderWidth: 3,
-        borderColor: "#FF4B8C",
+        borderWidth: 5,
+        borderColor: "#271146",
     },
     badge: {
         position: "absolute",

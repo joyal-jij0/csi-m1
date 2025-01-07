@@ -105,9 +105,10 @@ export default function HomeScreen() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.sectionHeader}>
-                    <Button iconAfter={Activity} variant="outlined" style={styles.sectionTitle}>
+                    {/* <Button iconAfter={Activity} variant="outlined"  style={styles.sectionTitle}>
                         Events
-                    </Button>
+                    </Button> */}
+                    <Text style={styles.sectionTitle}>Events</Text>
                 </View>
 
                 <FlatList
@@ -151,9 +152,11 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     sectionTitle: {
-        fontSize: 20,
+        fontSize: 24,
         color: "#FFFFFF",
         fontWeight: "600",
+        // borderColor: "#271146",
+        // borderWidth: 3
     },
     eventsList: {
         gap: 16,
