@@ -90,5 +90,6 @@ model Profile {
   program String
   branch  String
   email   String
+  phone   String
   gender  Gender
 }

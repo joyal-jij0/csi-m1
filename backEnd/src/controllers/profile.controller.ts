@@ -9,7 +9,7 @@ import { prisma } from "..";
 // profile creation controller:-
 
 const createProfile = asyncHandler(async (req: Request, res: Response) => {
-    const { name, college, year, program, branch, email, gender } = req.body;
+    const { name, college, year, program, branch, email, gender, phone } = req.body;
 
     // Extract userId from req.user
     const userId = (req.user as JwtPayload).userId;
@@ -19,11 +19,11 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
     }
 
     // Input validation
-    if (!name || !college || !year || !program || !branch) {
+    if (!name || !college || !year || !program || !email || !gender || !phone) {
         throw new ApiError(400, "All fields (name, college, year, program, branch) are required");
     }
 
-    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string" || typeof email !== "string" || typeof gender !== "string") {
+    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string" || typeof email !== "string" || typeof gender !== "string" || typeof phone !== "string") {
         throw new ApiError(400, "Invalid input types");
     }
 
@@ -48,6 +48,7 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
             branch: branch.toLowerCase(),
             email: email.toLowerCase(),
             gender: gender.toLowerCase() as $Enums.Gender,
+            phone: phone.toLowerCase()
         },
     });
 

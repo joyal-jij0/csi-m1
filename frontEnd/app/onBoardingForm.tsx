@@ -56,13 +56,14 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     const [selectedYear, setSelectedYear] = useState<string>("");
     const [selectedGender, setSelectedGender] = useState<string>("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("")
+    const [error, setError] = useState("");
 
     const yearOptions: string[] = [
         "1st Year",
         "2nd Year",
         "3rd Year",
         "4th Year",
+        "5th Year",
     ];
     const genderOptions: string[] = ["Male", "Female", "Other"];
 
@@ -79,13 +80,17 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                 branch: data.branch.trim().toLowerCase(),
                 email: data.email.trim().toLowerCase(),
                 gender: data.gender.trim().toLowerCase(),
+                phone: data.phone.trim().toLowerCase(),
             };
-            const response = await api.post("/profile/create/", transformedData);
+            const response = await api.post(
+                "/profile/create/",
+                transformedData
+            );
             // const response = await api.get("/healthcheck/")
-            console.log(response)
+            console.log(response);
         } catch (error: any) {
-            setError(error.response?.data.message || "An error occurred")
-            console.error("Error creating profile: ", error)
+            setError(error.response?.data.message || "An error occurred");
+            console.error("Error creating profile: ", error);
         } finally {
             setLoading(false);
         }
@@ -141,6 +146,38 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                                 {errors.name && (
                                     <Text style={styles.errorText}>
                                         {errors.name.message}
+                                    </Text>
+                                )}
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.label}>Phone</Text>
+                                <Controller
+                                    control={control}
+                                    name="phone"
+                                    rules={{
+                                        required: "Phone is required",
+                                        pattern: {
+                                            value: /^[0-9]{10}$/,
+                                            message: "Phone must be 10 digits",
+                                        },
+                                    }}
+                                    render={({
+                                        field: { onChange, value },
+                                    }) => (
+                                        <TextInput
+                                            placeholder="Enter your Mobile No."
+                                            onChangeText={onChange}
+                                            value={value}
+                                            style={styles.input}
+                                            placeholderTextColor="#aaa"
+                                            keyboardType="number-pad"
+                                        />
+                                    )}
+                                />
+                                {errors.phone && (
+                                    <Text style={styles.errorText}>
+                                        {errors.phone.message}
                                     </Text>
                                 )}
                             </View>
@@ -206,40 +243,72 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
 
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Year</Text>
-                                <TouchableOpacity
-                                    onPress={() => setYearModalVisible(true)}
-                                    style={styles.input}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.placeholderText,
-                                            selectedYear
-                                                ? { color: "#fff" }
-                                                : null,
-                                        ]}
-                                    >
-                                        {selectedYear || "Select Year"}
+                                <Controller
+                                    control={control}
+                                    name="year"
+                                    rules={{ required: "Year is required" }}
+                                    render={({
+                                        field: { value, onChange },
+                                    }) => (
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                setYearModalVisible(true)
+                                            }
+                                            style={styles.input}
+                                        >
+                                            <Text
+                                                style={[
+                                                    styles.placeholderText,
+                                                    value
+                                                        ? { color: "#fff" }
+                                                        : null,
+                                                ]}
+                                            >
+                                                {value || "Select Year"}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                                {errors.year && (
+                                    <Text style={styles.errorText}>
+                                        {errors.year.message}
                                     </Text>
-                                </TouchableOpacity>
+                                )}
                             </View>
 
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Gender</Text>
-                                <TouchableOpacity
-                                    onPress={() => setGenderModalVisible(true)}
-                                    style={styles.input}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.placeholderText,
-                                            selectedGender
-                                                ? { color: "#fff" }
-                                                : null,
-                                        ]}
-                                    >
-                                        {selectedGender || "Select Gender"}
+                                <Controller
+                                    control={control}
+                                    name="gender"
+                                    rules={{ required: "Gender is required" }}
+                                    render={({
+                                        field: { value, onChange },
+                                    }) => (
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                setGenderModalVisible(true)
+                                            }
+                                            style={styles.input}
+                                        >
+                                            <Text
+                                                style={[
+                                                    styles.placeholderText,
+                                                    value
+                                                        ? { color: "#fff" }
+                                                        : null,
+                                                ]}
+                                            >
+                                                {value || "Select Gender"}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                                {errors.gender && (
+                                    <Text style={styles.errorText}>
+                                        {errors.gender.message}
                                     </Text>
-                                </TouchableOpacity>
+                                )}
                             </View>
 
                             <View style={styles.inputGroup}>
@@ -247,6 +316,7 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                                 <Controller
                                     control={control}
                                     name="program"
+                                    rules={{ required: "Program is required" }}
                                     render={({
                                         field: { onChange, value },
                                     }) => (
@@ -259,6 +329,11 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                                         />
                                     )}
                                 />
+                                {errors.year && (
+                                    <Text style={styles.errorText}>
+                                        {errors.year.message}
+                                    </Text>
+                                )}
                             </View>
 
                             <View style={styles.inputGroup}>
