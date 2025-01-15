@@ -5,15 +5,16 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import api from "@/api/api";
 
-interface Event {
+export interface Event {
     id: string;
     title: string;
     type: "Music" | "Dance" | "Hackathon";
     time: Date;
     image: string;
     venue: string;
-    participants: number;
     description: string;
 }
 
@@ -26,6 +27,33 @@ const formatTime = (date: Date) => {
 };
 
 export default function HomeScreen() {
+    const [error, setError] = useState("")
+    const [events, setEvents] = useState<Event[]>([])
+
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await api.get("/events/retrieveAll/");
+                const backendEvents = response.data.data.map((event: any) => ({
+                    id: event.id,
+                    title: event.title,
+                    type: event.type,
+                    time: new Date(event.startsAt), // Parse `startsAt` into a Date object
+                    image: event.image,
+                    venue: event.venue,
+                    description: event.description,
+                }));
+                setEvents(backendEvents);
+            } catch (error) {
+                setError("Failed to fetch profile data");
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
+
     const renderEventCard = ({ item }: { item: Event }) => (
         <MotiView
             from={{ opacity: 0, translateY: 50 }}
@@ -34,7 +62,10 @@ export default function HomeScreen() {
         >
             <Pressable
                 style={styles.eventCard}
-                onPress={() => router.push(`/event/${item.id}`)}
+                onPress={() => router.push({
+                    pathname: "/event/[id]",
+                    params: { id: item.id, eventData: JSON.stringify(item) }
+                })}
             >
                 <Image source={{ uri: item.image }} style={styles.cardImage} />
                 <BlurView intensity={80} tint="dark" style={styles.cardContent}>
@@ -67,7 +98,7 @@ export default function HomeScreen() {
                                 </Text>
                             </View>
                         </View>
-                        <View style={styles.participants}>
+                        {/* <View style={styles.participants}>
                             <Ionicons
                                 name="people-outline"
                                 size={16}
@@ -76,7 +107,7 @@ export default function HomeScreen() {
                             <Text style={styles.participantsText}>
                                 {item.participants} attending
                             </Text>
-                        </View>
+                        </View> */}
                     </LinearGradient>
                 </BlurView>
             </Pressable>
@@ -111,7 +142,7 @@ export default function HomeScreen() {
                 </View> */}
 
                 <FlatList
-                    data={DUMMY_EVENTS}
+                    data={events}
                     renderItem={renderEventCard}
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
@@ -229,7 +260,7 @@ const DUMMY_EVENTS: Event[] = [
         time: new Date(),
         image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
         venue: "Main Auditorium",
-        participants: 120,
+        // participants: 120,
         description: "Join us for an evening of musical excellence",
     },
     {
@@ -239,7 +270,7 @@ const DUMMY_EVENTS: Event[] = [
         time: new Date(Date.now() + 30 * 60000),
         image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea",
         venue: "Dance Arena",
-        participants: 85,
+        // participants: 85,
         description: "Showcase your dance moves",
     },
     {
@@ -249,7 +280,7 @@ const DUMMY_EVENTS: Event[] = [
         time: new Date(Date.now() - 30 * 60000),
         image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0",
         venue: "Innovation Hub",
-        participants: 200,
+        // participants: 200,
         description: "Code your way to victory",
     },
 ];

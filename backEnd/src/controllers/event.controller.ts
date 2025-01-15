@@ -164,6 +164,25 @@ const getEvent = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+const getAllEvents = asyncHandler(async (req: Request, res: Response) => {
+    // Fetch all events from the database
+    const events = await prisma.event.findMany();
+
+    // Check if no events exist
+    if (!events || events.length === 0) {
+        throw new ApiError(404, "No events found");
+    }
+
+    // Return events
+    return res.status(200).json(
+        new ApiResponse<typeof events>({
+            statusCode: 200,
+            data: events,
+            message: "Events retrieved successfully",
+        })
+    );
+});
+
 
 const getEvents = asyncHandler(async (req: Request, res: Response) => {
     const { type, startsAfter, endsBefore } = req.query;
@@ -288,4 +307,4 @@ const getTopThree = async (req: any, res: any) => {
 
 
 
-export {createEvent, updateEvent, deleteEvent, getEvent, getEvents, getTopThree}
+export {createEvent, updateEvent, deleteEvent, getEvent, getEvents, getTopThree, getAllEvents}
