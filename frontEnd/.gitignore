@@ -39,3 +39,6 @@ app-example
 
 package-lock.json
 .env
+
+CSI M1 Firebase Admin SDK.json
+google-services.json
