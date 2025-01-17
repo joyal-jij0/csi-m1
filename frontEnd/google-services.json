@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "251038343151",
+    "project_id": "csi-m1",
+    "storage_bucket": "csi-m1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251038343151:android:9813837330cd7e43bea01a",
+        "android_client_info": {
+          "package_name": "com.joyaljijo.csim1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHIW_0DM2r7HCqIDHuEteOiBuFiWAgRTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
