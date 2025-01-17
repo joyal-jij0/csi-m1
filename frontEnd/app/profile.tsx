@@ -182,6 +182,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginBottom: 80,
     },
     profileContainer: {
         alignItems: "center",
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
     infoCard: {
         // backgroundColor: 'rgba(255,255,255,0.05)',
         borderRadius: 20,
-        padding: 20,
+        padding: 10,
         marginHorizontal: 20,
         marginBottom: 25,
         backgroundColor: "#000",
