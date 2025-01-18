@@ -39,18 +39,19 @@ model User {
 }
 
 model Event {
-  id           String        @id @default(cuid())
-  title        String
-  image        String
-  description  String?
-  venue        String
-  performers   String[] // Array of strings
-  type         String
-  startsAt     DateTime
-  endsAt       DateTime
-  voting       Boolean
-  createdAt    DateTime      @default(now())
-  performances Performance[]
+  id               String        @id @default(cuid())
+  title            String
+  image            String
+  description      String?
+  venue            String
+  performers       String[] // Array of strings
+  type             String
+  registrationLink String?
+  startsAt         DateTime
+  endsAt           DateTime
+  voting           Boolean
+  createdAt        DateTime      @default(now())
+  performances     Performance[]
 }
 
 model Performance {
