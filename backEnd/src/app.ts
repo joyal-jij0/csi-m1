@@ -20,6 +20,7 @@ import profileRouter from "./routes/profile.routes"
 import eventsRouter from "./routes/event.routes"
 import performanceRouter from './routes/performance.routes'
 import votingRouter from './routes/voting.routes'
+import pushNotificationRouter from './routes/pushNotifications.routes'
 
 app.use("/api/v1/healthcheck", healthcheckRouter)
 app.use("/api/v1/user", userRouter)
@@ -27,5 +28,6 @@ app.use("/api/v1/profile", profileRouter)
 app.use("/api/v1/events", eventsRouter)
 app.use("/api/v1/performance", performanceRouter)
 app.use("/api/v1/voting", votingRouter)
+app.use("/api/v1/pushNotification", pushNotificationRouter)
 
 export {app, server}
