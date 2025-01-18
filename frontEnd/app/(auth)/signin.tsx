@@ -161,11 +161,24 @@
 //   );
 // }
 
+
+// const AppleIcon = () => (
+//     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+//         <Path
+//             d="M17.05 20.28a11.1 11.1 0 0 1-1.14.61 10.19 10.19 0 0 1-1.48.57 10.16 10.16 0 0 1-1.69.37 10.87 10.87 0 0 1-1.76.14 10.87 10.87 0 0 1-1.76-.14 10.16 10.16 0 0 1-1.69-.37 10.19 10.19 0 0 1-1.48-.57 11.1 11.1 0 0 1-1.14-.61 12.11 12.11 0 0 1-2.55-2.37A11.61 11.61 0 0 1 1 13.66a11.89 11.89 0 0 1-.85-2.39A11.85 11.85 0 0 1 0 8.68a11.85 11.85 0 0 1 .15-2.59A11.89 11.89 0 0 1 1 3.7a11.61 11.61 0 0 1 1.38-2.25A12.11 12.11 0 0 1 4.93.08a11.1 11.1 0 0 1 1.14-.61 10.19 10.19 0 0 1 1.48-.57A10.16 10.16 0 0 1 9.24 0a10.87 10.87 0 0 1 1.76-.14 10.87 10.87 0 0 1 1.76.14 10.16 10.16 0 0 1 1.69.37 10.19 10.19 0 0 1 1.48.57 11.1 11.1 0 0 1 1.14.61 12.11 12.11 0 0 1 2.55 2.37A11.61 11.61 0 0 1 21 6.17a11.89 11.89 0 0 1 .85 2.39 11.85 11.85 0 0 1 .15 2.59 11.85 11.85 0 0 1-.15 2.59 11.89 11.89 0 0 1-.85 2.39 11.61 11.61 0 0 1-1.38 2.25 12.11 12.11 0 0 1-2.55 2.37z"
+//             fill="#000000"
+//         />
+//         <Path
+//             d="M12 3.5c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4m0-1c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z"
+//             fill="#ffffff"
+//         />
+//     </Svg>
+// );
+
 import { Text, View, YStack, Button } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import { Image } from "expo-image";
-import React, { useState } from "react";
-import { Platform } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Svg, Path } from "react-native-svg";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
@@ -173,6 +186,8 @@ import { login } from "@/redux/features/authSlice";
 import { AppDispatch } from "@/redux/store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "@/api/api";
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import auth from '@react-native-firebase/auth'
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -195,28 +210,49 @@ const GoogleIcon = () => (
     </Svg>
 );
 
-const AppleIcon = () => (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M17.05 20.28a11.1 11.1 0 0 1-1.14.61 10.19 10.19 0 0 1-1.48.57 10.16 10.16 0 0 1-1.69.37 10.87 10.87 0 0 1-1.76.14 10.87 10.87 0 0 1-1.76-.14 10.16 10.16 0 0 1-1.69-.37 10.19 10.19 0 0 1-1.48-.57 11.1 11.1 0 0 1-1.14-.61 12.11 12.11 0 0 1-2.55-2.37A11.61 11.61 0 0 1 1 13.66a11.89 11.89 0 0 1-.85-2.39A11.85 11.85 0 0 1 0 8.68a11.85 11.85 0 0 1 .15-2.59A11.89 11.89 0 0 1 1 3.7a11.61 11.61 0 0 1 1.38-2.25A12.11 12.11 0 0 1 4.93.08a11.1 11.1 0 0 1 1.14-.61 10.19 10.19 0 0 1 1.48-.57A10.16 10.16 0 0 1 9.24 0a10.87 10.87 0 0 1 1.76-.14 10.87 10.87 0 0 1 1.76.14 10.16 10.16 0 0 1 1.69.37 10.19 10.19 0 0 1 1.48.57 11.1 11.1 0 0 1 1.14.61 12.11 12.11 0 0 1 2.55 2.37A11.61 11.61 0 0 1 21 6.17a11.89 11.89 0 0 1 .85 2.39 11.85 11.85 0 0 1 .15 2.59 11.85 11.85 0 0 1-.15 2.59 11.89 11.89 0 0 1-.85 2.39 11.61 11.61 0 0 1-1.38 2.25 12.11 12.11 0 0 1-2.55 2.37z"
-            fill="#000000"
-        />
-        <Path
-            d="M12 3.5c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4m0-1c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z"
-            fill="#ffffff"
-        />
-    </Svg>
-);
 
 export default function Signin() {
     const dispatch = useDispatch<AppDispatch>();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [intializing, setInitializing] = useState(true);
+
+    GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    })
+
+    
+    function onAuthStateChanged(user: any){
+        if(intializing) setInitializing(false);
+    }
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber;
+    }, [])
+
+    
 
     const handleSignIn = async () => {
         setIsLoading(true);
         setError("");
         try {
+
+            await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+
+            const signInResult = await GoogleSignin.signIn();
+            console.log(signInResult)
+    
+            let idToken = signInResult.data?.idToken 
+    
+            if(!idToken){
+                throw new Error('No ID token found') 
+            }
+    
+            const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data?.idToken!)
+    
+            auth().signInWithCredential(googleCredential) 
+
             const response = await api.post("/user/signIn", {
                 phone: "9999999999",
                 password: "123"
@@ -251,27 +287,7 @@ export default function Signin() {
         }
     };
 
-    const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            // Implement Google Sign-in logic here
-        } catch (error) {
-            console.error("Google Sign-in failed:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleAppleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            // Implement Apple Sign-in logic here
-        } catch (error) {
-            console.error("Apple Sign-in failed:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    if(intializing) return null;
 
     return (
         <LinearGradient
@@ -335,24 +351,6 @@ export default function Signin() {
                                 ? "Signing in..."
                                 : "Continue with Google"}
                         </Button>
-
-                        {Platform.OS === "ios" && (
-                            <Button
-                                icon={AppleIcon}
-                                theme="dark"
-                                backgroundColor="#000000"
-                                color="#ffffff"
-                                borderColor="#ffffff33"
-                                onPress={handleAppleSignIn}
-                                disabled={isLoading}
-                                opacity={isLoading ? 0.6 : 1}
-                                height={45}
-                            >
-                                {isLoading
-                                    ? "Signing in..."
-                                    : "Continue with Apple"}
-                            </Button>
-                        )}
                     </YStack>
                 </View>
             </SafeAreaView>
