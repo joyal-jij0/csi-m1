@@ -128,20 +128,20 @@ const pushNotificationToken = asyncHandler(async(req: Request, res: Response) =>
 })
 
 const signIn = asyncHandler(async (req: Request, res: Response) => {
-    const { phone } = req.body;
+    const { email } = req.body;
 
-    if (!phone) {
-        throw new ApiError(400, "Phone and password are required");
+    if (!email) {
+        throw new ApiError(400, "Email is required");
     }
 
-    if (typeof phone !== 'string') {
-        throw new ApiError(400, "Phone must be a string");
+    if (typeof email !== 'string') {
+        throw new ApiError(400, "email must be a string");
     }
 
 
     // Check if the user exists
     let user = await prisma.user.findFirst({
-        where: { phone: phone },
+        where: { email: email },
     });
 
     if (user) {
@@ -171,7 +171,7 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
     } else {
 
         const newUser: User = await prisma.user.create({
-            data: { phone: phone },
+            data: { email: email },
         });
 
         if (!newUser) {

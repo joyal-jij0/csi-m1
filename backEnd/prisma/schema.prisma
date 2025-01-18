@@ -28,7 +28,7 @@ model HealthCheck {
 
 model User {
   id           String   @id @default(cuid())
-  phone        String   @unique
+  email        String   @unique
   refreshToken String?  @unique
   accessToken  String?  @unique
   pushToken    String?  @unique
@@ -89,7 +89,6 @@ model Profile {
   year    Int
   program String
   branch  String
-  email   String
   phone   String
   gender  Gender
 }

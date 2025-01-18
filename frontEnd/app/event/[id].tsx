@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { Text } from 'react-native';
-import { Event } from '../(tabs)';
 
 const { width } = Dimensions.get('window');
 

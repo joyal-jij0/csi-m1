@@ -19,7 +19,6 @@ import api from "@/api/api";
 interface FormData {
     name: string;
     phone: string;
-    email: string;
     college: string;
     year: string;
     program: string;
@@ -41,7 +40,6 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
         defaultValues: {
             name: "",
             phone: "",
-            email: "",
             college: "",
             year: "",
             program: "",
@@ -78,7 +76,6 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                 college: data.college.trim().toLowerCase(),
                 program: data.program.trim().toLowerCase(),
                 branch: data.branch.trim().toLowerCase(),
-                email: data.email.trim().toLowerCase(),
                 gender: data.gender.trim().toLowerCase(),
                 phone: data.phone.trim().toLowerCase(),
             };
@@ -178,38 +175,6 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                                 {errors.phone && (
                                     <Text style={styles.errorText}>
                                         {errors.phone.message}
-                                    </Text>
-                                )}
-                            </View>
-
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.label}>Email Address</Text>
-                                <Controller
-                                    control={control}
-                                    name="email"
-                                    rules={{
-                                        required: "Email is required",
-                                        pattern: {
-                                            value: /^\S+@\S+\.\S+$/,
-                                            message: "Invalid email address",
-                                        },
-                                    }}
-                                    render={({
-                                        field: { onChange, value },
-                                    }) => (
-                                        <TextInput
-                                            placeholder="Enter your email"
-                                            keyboardType="email-address"
-                                            onChangeText={onChange}
-                                            value={value}
-                                            style={styles.input}
-                                            placeholderTextColor="#aaa"
-                                        />
-                                    )}
-                                />
-                                {errors.email && (
-                                    <Text style={styles.errorText}>
-                                        {errors.email.message}
                                     </Text>
                                 )}
                             </View>

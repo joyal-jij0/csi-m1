@@ -253,21 +253,24 @@ export default function Signin() {
     
             auth().signInWithCredential(googleCredential) 
 
-            const response = await api.post("/user/signIn", {
-                phone: "9999999999",
-                password: "123"
-            })
+            if(signInResult.type === "success"){
+                const response = await api.post("/user/signIn", {
+                    email: signInResult.data?.user?.email
+                })
+                
+                const { data } = response
+    
+                const {accessToken, refreshToken, id } = data.data;
+    
+                console.log(accessToken, refreshToken, id)
+    
+                dispatch(login(accessToken, refreshToken, id))
+    
+                //TODO: Yha Onboarding Form krna replace
+                router.replace("/(tabs)");
+                
+            }
             
-            const { data } = response
-
-            const {accessToken, refreshToken, id } = data.data;
-
-            console.log(accessToken, refreshToken, id)
-
-            dispatch(login(accessToken, refreshToken, id))
-
-            //TODO: Yha Onboarding Form krna replace
-            router.replace("/(tabs)");
         } catch (error: any) {
             if (error.response) {
                 setError(

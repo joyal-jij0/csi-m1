@@ -9,7 +9,7 @@ import { prisma } from "..";
 // profile creation controller:-
 
 const createProfile = asyncHandler(async (req: Request, res: Response) => {
-    const { name, college, year, program, branch, email, gender, phone } = req.body;
+    const { name, college, year, program, branch, gender, phone } = req.body;
 
     // Extract userId from req.user
     const userId = (req.user as JwtPayload).userId;
@@ -19,11 +19,11 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
     }
 
     // Input validation
-    if (!name || !college || !year || !program || !email || !gender || !phone) {
+    if (!name || !college || !year || !program  || !gender || !phone) {
         throw new ApiError(400, "All fields (name, college, year, program, branch) are required");
     }
 
-    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string" || typeof email !== "string" || typeof gender !== "string" || typeof phone !== "string") {
+    if (typeof name !== "string" || typeof college !== "string" || typeof program !== "string" || typeof branch !== "string"  || typeof gender !== "string" || typeof phone !== "string") {
         throw new ApiError(400, "Invalid input types");
     }
 
@@ -46,7 +46,6 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
             year,
             program: program.toLowerCase(),
             branch: branch.toLowerCase(),
-            email: email.toLowerCase(),
             gender: gender.toLowerCase() as $Enums.Gender,
             phone: phone.toLowerCase()
         },
@@ -122,19 +121,33 @@ const getProfile = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(400, "Unauthorized: Missing user information");
     }
 
-    // Fetch the user's profile
+    // Fetch the user's profile along with their email
     const profile = await prisma.profile.findUnique({
         where: { userId },
+        include: {
+            user: { // Include the related User model
+                select: {
+                    email: true, // Only select the email field
+                },
+            },
+        },
     });
 
     if (!profile) {
         throw new ApiError(404, "Profile not found");
     }
 
+    // Structure the response to include email
+    const responseData: Partial<typeof profile & { email: string | null }> = {
+        ...profile,
+        email: profile.user?.email, // Add the email to the profile response
+    };
+    delete responseData.user; // Remove the user object since we only need the email
+
     return res.status(200).json(
-        new ApiResponse<typeof profile>({
+        new ApiResponse<typeof responseData>({
             statusCode: 200,
-            data: profile,
+            data: responseData,
             message: "Profile retrieved successfully",
         })
     );
