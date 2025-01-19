@@ -36,7 +36,7 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
 
         const accessToken = generateAccessToken();
         const refreshToken = generateRefreshToken();
-
+        console.log("Access Token generated: ",accessToken)
 
         // await prisma.user.update({
         //     where: {
