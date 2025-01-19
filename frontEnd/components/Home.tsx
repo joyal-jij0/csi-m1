@@ -12,7 +12,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MotiView } from "moti";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import api from "@/api/api";
@@ -67,10 +66,7 @@ export default function Home() {
     }, []);
 
     const renderEventCard = ({ item }: { item: Event }) => (
-        <MotiView
-            from={{ opacity: 0, translateY: 50 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 300 * parseInt(item.id) }}
+        <View
         >
             <Pressable
                 style={styles.eventCard}
@@ -150,7 +146,7 @@ export default function Home() {
                     </LinearGradient>
                 </BlurView>
             </Pressable>
-        </MotiView>
+        </View>
     );
 
     return (
