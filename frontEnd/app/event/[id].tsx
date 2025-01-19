@@ -57,8 +57,9 @@ export default function EventDetailsScreen() {
           </View> */}
 
           <Text style={styles.description}>{event.description}</Text>
-          <Button
-                                    size="$4"
+          {event.isRegistrationLive && (
+                                <Button
+                                    size="$3"
                                     theme="blue"
                                     themeInverse
                                     variant="outlined"
@@ -69,6 +70,7 @@ export default function EventDetailsScreen() {
                                 >
                                     Register
                                 </Button>
+                            )}
         </BlurView>
       </ScrollView>
     </SafeAreaView>
