@@ -142,9 +142,6 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
     // Check if the user exists
     let user = await prisma.user.findUnique({
         where: { email: email },
-        include: {
-            profile: true
-        }
     });
 
     if (user) {
@@ -160,13 +157,11 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
         //     }
         // });
 
-        const profileExists = !!user.profile;
 
         const userResponse = {
             ...user,
             accessToken,
             refreshToken,
-            profileExists,
         } as { [key: string]: any };
 
 
