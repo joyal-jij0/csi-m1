@@ -4,8 +4,8 @@ const router: Router = Router()
 
 import { verifyJWT } from "../middlewares/auth.middleware"
 
-router.route("/getStream/:performanceId").get(createSSEStream);
-router.route("/submitVote/:performanceId").post(verifyJWT, submitVote);
+router.route("/getStream").get(createSSEStream);
+router.route("/submitVote").post(verifyJWT, submitVote);
 router.route("/startVoting/:performanceId").post(verifyJWT, startVoting);
 router.route("/endVoting/:performanceId").post(verifyJWT, endVoting);
 
