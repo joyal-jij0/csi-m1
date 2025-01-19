@@ -159,7 +159,7 @@ export default function Home() {
                 <View style={styles.header}>
                     <View style={styles.leftContainer}>
                         <Image
-                            source={require("@/assets/images/icon-1.png")}
+                            source={require("@/assets/images/csi.png")}
                             style={styles.logo}
                             resizeMode="contain"
                         />
