@@ -29,11 +29,11 @@ model HealthCheck {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  refreshToken String?  @unique
-  accessToken  String?  @unique
+  // refreshToken String?  @unique
+  // accessToken  String?  @unique
   pushToken    String?  @unique
   isAdmin      Boolean  @default(false)
-  profile      Profile? // Add this to complete the relation
+  profile      Profile? 
   createdAt    DateTime @default(now())
   votes        Vote[]
 }

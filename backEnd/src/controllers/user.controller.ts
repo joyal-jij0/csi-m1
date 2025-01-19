@@ -38,15 +38,15 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
         const refreshToken = generateRefreshToken();
 
 
-        await prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                accessToken,
-                refreshToken,
-            }
-        });
+        // await prisma.user.update({
+        //     where: {
+        //         id: user.id,
+        //     },
+        //     data: {
+        //         accessToken,
+        //         refreshToken,
+        //     }
+        // });
 
         return { accessToken, refreshToken };
     } catch (error) {
@@ -140,8 +140,11 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
 
 
     // Check if the user exists
-    let user = await prisma.user.findFirst({
+    let user = await prisma.user.findUnique({
         where: { email: email },
+        include: {
+            profile: true
+        }
     });
 
     if (user) {
@@ -149,15 +152,21 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
         // Generate tokens and log in the user
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id);
 
-        user = await prisma.user.update({
-            where: { id: user.id },
-            data: { refreshToken },
-        });
+        // user = await prisma.user.update({
+        //     where: { id: user.id },
+        //     data: { refreshToken },
+        //     include: {
+        //         profile: true
+        //     }
+        // });
+
+        const profileExists = !!user.profile;
 
         const userResponse = {
             ...user,
             accessToken,
             refreshToken,
+            profileExists,
         } as { [key: string]: any };
 
 
@@ -204,15 +213,15 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
     }
 
     // Update the user record to clear the refresh token
-    await prisma.user.update({
-        where: {
-            id: userId,
-        },
-        data: {
-            refreshToken: null,
-            accessToken: null,
-        },
-    });
+    // await prisma.user.update({
+    //     where: {
+    //         id: userId,
+    //     },
+    //     data: {
+    //         refreshToken: null,
+    //         accessToken: null,
+    //     },
+    // });
 
     return res.status(200).json(
         new ApiResponse({
