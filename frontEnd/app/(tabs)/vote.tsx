@@ -58,6 +58,7 @@ export default function Vote() {
         const response = await api.post("/voting/submitVote", {
             vote: type === "yes",
         });
+        console.log(response.data.message);
 
         setShowSuccessModal(true);
         console.log(`Voted ${type == "yes" ? true : false}`);
