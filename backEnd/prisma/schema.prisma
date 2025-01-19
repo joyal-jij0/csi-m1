@@ -51,6 +51,7 @@ model Event {
   endsAt           DateTime
   voting           Boolean
   createdAt        DateTime      @default(now())
+  isRegistrationLive Boolean @default(true)
   performances     Performance[]
 }
 

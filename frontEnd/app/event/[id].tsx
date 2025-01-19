@@ -1,9 +1,10 @@
-import { View, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Dimensions, Linking } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { Text } from 'react-native';
+import { Button } from 'tamagui';
 
 const { width } = Dimensions.get('window');
 
@@ -56,6 +57,18 @@ export default function EventDetailsScreen() {
           </View> */}
 
           <Text style={styles.description}>{event.description}</Text>
+          <Button
+                                    size="$4"
+                                    theme="blue"
+                                    themeInverse
+                                    variant="outlined"
+                                    backgroundColor="black"
+                                    onPress={() =>
+                                        Linking.openURL(event.registrationLink)
+                                    }
+                                >
+                                    Register
+                                </Button>
         </BlurView>
       </ScrollView>
     </SafeAreaView>
@@ -98,6 +111,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     lineHeight: 24,
     marginTop: 20,
+    marginBottom: 20,
   },
   errorText: {
     color: '#fff',

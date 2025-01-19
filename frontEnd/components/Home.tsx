@@ -1,4 +1,13 @@
-import { StyleSheet, Pressable, FlatList, Image,View,Text, TouchableOpacity} from "react-native";
+import {
+    StyleSheet,
+    Pressable,
+    FlatList,
+    Image,
+    View,
+    Text,
+    TouchableOpacity,
+    Linking,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
@@ -7,15 +16,18 @@ import { MotiView } from "moti";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import api from "@/api/api";
+import { Button } from "tamagui";
 
 export interface Event {
     id: string;
     title: string;
-    type: "Music" | "Dance" | "Hackathon";
+    type: string;
     time: Date;
     image: string;
     venue: string;
     description: string;
+    registrationLink: string;
+    isRegistrationLive: boolean;
 }
 
 const formatTime = (date: Date) => {
@@ -27,9 +39,8 @@ const formatTime = (date: Date) => {
 };
 
 export default function Home() {
-    const [error, setError] = useState("")
-    const [events, setEvents] = useState<Event[]>([])
-
+    const [error, setError] = useState("");
+    const [events, setEvents] = useState<Event[]>([]);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -43,8 +54,11 @@ export default function Home() {
                     image: event.image,
                     venue: event.venue,
                     description: event.description,
+                    registrationLink: event.registrationLink,
+                    isRegistrationLive: event.isRegistrationLive,
                 }));
                 setEvents(backendEvents);
+                console.log(backendEvents);
             } catch (error) {
                 setError("Failed to fetch profile data");
             }
@@ -52,7 +66,6 @@ export default function Home() {
 
         fetchEvents();
     }, []);
-
 
     const renderEventCard = ({ item }: { item: Event }) => (
         <MotiView
@@ -62,10 +75,15 @@ export default function Home() {
         >
             <Pressable
                 style={styles.eventCard}
-                onPress={() => router.push({
-                    pathname: "/event/[id]",
-                    params: { id: item.id, eventData: JSON.stringify(item) }
-                })}
+                onPress={() =>
+                    router.push({
+                        pathname: "/event/[id]",
+                        params: {
+                            id: item.id,
+                            eventData: JSON.stringify(item),
+                        },
+                    })
+                }
             >
                 <Image source={{ uri: item.image }} style={styles.cardImage} />
                 <BlurView intensity={80} tint="dark" style={styles.cardContent}>
@@ -73,10 +91,17 @@ export default function Home() {
                         colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.8)"]}
                         style={styles.gradient}
                     >
-                        <Text style={styles.eventTitle}>
-                            {item.title}
-                        </Text>
-                        <View style={styles.eventInfo}>
+                        <Text style={styles.eventTitle}>{item.title}</Text>
+                        <View
+                            style={[
+                                styles.eventInfo,
+                                {
+                                    justifyContent: item.isRegistrationLive
+                                        ? "space-between"
+                                        : "flex-start",
+                                },
+                            ]}
+                        >
                             <View style={styles.infoItem}>
                                 <Ionicons
                                     name="time-outline"
@@ -87,6 +112,7 @@ export default function Home() {
                                     {formatTime(item.time)}
                                 </Text>
                             </View>
+
                             <View style={styles.infoItem}>
                                 <Ionicons
                                     name="location-outline"
@@ -97,6 +123,20 @@ export default function Home() {
                                     {item.venue}
                                 </Text>
                             </View>
+                            {item.isRegistrationLive && (
+                                <Button
+                                    size="$3"
+                                    theme="blue"
+                                    themeInverse
+                                    variant="outlined"
+                                    backgroundColor="black"
+                                    onPress={() =>
+                                        Linking.openURL(item.registrationLink)
+                                    }
+                                >
+                                    Register
+                                </Button>
+                            )}
                         </View>
                         {/* <View style={styles.participants}>
                             <Ionicons
@@ -116,30 +156,27 @@ export default function Home() {
 
     return (
         <LinearGradient
-        colors={["#000000", "#271146"]}
-        style={{ flex: 1 }}
-        locations={[0, 0.99]}
-    >
-        <SafeAreaView style={styles.container}>
+            colors={["#000000", "#271146"]}
+            style={{ flex: 1 }}
+            locations={[0, 0.99]}
+        >
+            <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.leftContainer}>
                         <Image
-                            source={require('@/assets/images/icon-1.png')}
+                            source={require("@/assets/images/icon-1.png")}
                             style={styles.logo}
                             resizeMode="contain"
                         />
                     </View>
-                    <TouchableOpacity onPress={() => router.push('/profile')}>
-                        <MaterialCommunityIcons name="account-circle-outline" size={40} color="white" />
+                    <TouchableOpacity onPress={() => router.push("/profile")}>
+                        <MaterialCommunityIcons
+                            name="account-circle-outline"
+                            size={40}
+                            color="white"
+                        />
                     </TouchableOpacity>
                 </View>
-                
-                {/* <View style={styles.sectionHeader}>
-                    <Button iconAfter={Activity} variant="outlined"  style={styles.sectionTitle}>
-                        Events
-                    </Button>
-                    <Text style={styles.sectionTitle}>Events</Text>
-                </View> */}
 
                 <FlatList
                     data={events}
@@ -148,7 +185,7 @@ export default function Home() {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.eventsList}
                 />
-        </SafeAreaView>
+            </SafeAreaView>
         </LinearGradient>
     );
 }
@@ -160,26 +197,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         marginTop: 20,
         marginBottom: 10,
     },
     leftContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
     },
     greeting: {
         fontSize: 32,
         color: "#FFFFFF",
         fontWeight: "700",
-    },
-    sectionHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 16,
     },
     sectionTitle: {
         fontSize: 24,
@@ -218,8 +249,8 @@ const styles = StyleSheet.create({
     },
     eventInfo: {
         flexDirection: "row",
-        gap: 16,
-        marginBottom: 8,
+        gap: 10,
+        alignItems: "center",
     },
     infoItem: {
         flexDirection: "row",
@@ -248,39 +279,39 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: 60,
-        height: 40
-    }
+        height: 40,
+    },
 });
 
-const DUMMY_EVENTS: Event[] = [
-    {
-        id: "1",
-        title: "Music Competition",
-        type: "Music",
-        time: new Date(),
-        image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
-        venue: "Main Auditorium",
-        // participants: 120,
-        description: "Join us for an evening of musical excellence",
-    },
-    {
-        id: "2",
-        title: "Dance Competition",
-        type: "Dance",
-        time: new Date(Date.now() + 30 * 60000),
-        image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea",
-        venue: "Dance Arena",
-        // participants: 85,
-        description: "Showcase your dance moves",
-    },
-    {
-        id: "3",
-        title: "Smart Hackathon",
-        type: "Hackathon",
-        time: new Date(Date.now() - 30 * 60000),
-        image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0",
-        venue: "Innovation Hub",
-        // participants: 200,
-        description: "Code your way to victory",
-    },
-];
+// const DUMMY_EVENTS: Event[] = [
+//     {
+//         id: "1",
+//         title: "Music Competition",
+//         type: "Music",
+//         time: new Date(),
+//         image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
+//         venue: "Main Auditorium",
+//         // participants: 120,
+//         description: "Join us for an evening of musical excellence",
+//     },
+//     {
+//         id: "2",
+//         title: "Dance Competition",
+//         type: "Dance",
+//         time: new Date(Date.now() + 30 * 60000),
+//         image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea",
+//         venue: "Dance Arena",
+//         // participants: 85,
+//         description: "Showcase your dance moves",
+//     },
+//     {
+//         id: "3",
+//         title: "Smart Hackathon",
+//         type: "Hackathon",
+//         time: new Date(Date.now() - 30 * 60000),
+//         image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0",
+//         venue: "Innovation Hub",
+//         // participants: 200,
+//         description: "Code your way to victory",
+//     },
+// ];
