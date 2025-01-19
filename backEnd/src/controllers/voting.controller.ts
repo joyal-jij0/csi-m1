@@ -27,6 +27,7 @@ const createSSEStream = asyncHandler(async (req: Request, res: Response) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('Access-Control-Allow-Origin', '*'); //dev only
+    res.setHeader("X-Accel-Buffering", "no"); // otherwise nginx will buffer the response
     res.flushHeaders();
 
     const votingStarted = !!currentVoting && currentVoting.countdown > 0;
