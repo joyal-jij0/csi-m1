@@ -16,7 +16,7 @@
 //   const [isImageSquare, setIsImageSquare] = useState(true);
 
 //   const handleContinue = () => {
-//     setIsLoading(true); // TODO: handle this loading and show the OTP Input
+//     setIsLoading(true); 
 //     if (isImageSquare) {
 //       animatedWidth.value = withSpring(screenWidth / 2);
 //     } else {
@@ -241,7 +241,6 @@ export default function Signin() {
             await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
 
             const signInResult = await GoogleSignin.signIn();
-            console.log(signInResult)
     
             let idToken = signInResult.data?.idToken 
     
@@ -262,12 +261,10 @@ export default function Signin() {
     
                 const {accessToken, refreshToken, id } = data.data;
     
-                console.log(accessToken, refreshToken, id)
-    
                 dispatch(login(accessToken, refreshToken, id))
     
                 //TODO: Yha Onboarding Form krna replace
-                router.replace("/(tabs)");
+                router.replace("/onBoardingForm");
                 
             }
             

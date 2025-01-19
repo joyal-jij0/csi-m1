@@ -15,6 +15,8 @@ import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import api from "@/api/api";
+import { SecureStorage } from "@/utils/secureStorage";
+import { router } from "expo-router";
 
 interface FormData {
     name: string;
@@ -83,8 +85,8 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                 "/profile/create/",
                 transformedData
             );
-            // const response = await api.get("/healthcheck/")
-            console.log(response);
+            await SecureStorage.setProfileExists(true);
+            router.replace('/(tabs)')
         } catch (error: any) {
             setError(error.response?.data.message || "An error occurred");
             console.error("Error creating profile: ", error);

@@ -17,8 +17,9 @@ import { RootState } from "@/redux/store";
 import { createTamagui, TamaguiProvider, View } from "tamagui";
 import defaultConfig from "@tamagui/config/v3";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { getAccessToken } from "@/api/api";
+import api, { getAccessToken } from "@/api/api";
 import { setAuthenticated } from "@/redux/features/authSlice";
+import { SecureStorage } from "@/utils/secureStorage";
 const config = createTamagui(defaultConfig);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -30,10 +31,12 @@ function RootLayoutNav() {
     const isAuthenticated = useSelector(
         (state: RootState) => state.auth.isAuthenticated
     );
-    const segements = useSegments();
+    const segments = useSegments();
     const router = useRouter();
     const dispatch = useDispatch();
     const [isInitialized, setIsInitialized] = useState(false);
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
+    const [hasProfile, setHasProfile] = useState(false)
 
     useEffect(() => {
         const intializeAuth = async () => {
@@ -52,28 +55,62 @@ function RootLayoutNav() {
         intializeAuth();
     }, [dispatch]);
 
+    useEffect(() => {
+        const checkProfile = async () => {
+            if (!isAuthenticated) {
+                setIsProfileLoading(false);
+                return;
+            }
+
+            try {
+                const profileExists = await SecureStorage.getProfileExists();
+                
+                if (profileExists !== null) {
+                    setHasProfile(profileExists);
+                } else {
+                    // Only make API call if we don't have cached value
+                    const response = await api.get('/profile/check/');
+                    const exists = response.data.exists;
+                    await SecureStorage.setProfileExists(exists);
+                    setHasProfile(exists);
+                }
+            } catch (error) {
+                console.error('Error checking profile:', error);
+                setHasProfile(false);
+            } finally {
+                setIsProfileLoading(false);
+            }
+        };
+
+        checkProfile();
+    }, [isAuthenticated]);
+
 
     useEffect(() => {
-        if (!isInitialized) {
-            router.replace("/signin");
-        }
+        if (!isInitialized) return;
 
-        const inAuthGroup = segements[0] === "(auth)";
+        const inAuthGroup = segments[0] === "(auth)";
+
         if (!isAuthenticated && !inAuthGroup) {
             router.replace("/signin");
-        } else if (isAuthenticated && inAuthGroup) {
-            //TODO: Yha OnboardingForm replace krna
-            router.replace("/(tabs)");
+        } else if (isAuthenticated && !isProfileLoading) {
+            if (inAuthGroup) {
+                if (hasProfile) {
+                    router.replace("/(tabs)");
+                } else {
+                    router.replace("/onBoardingForm");
+                }
+            }
         }
-    }, [isAuthenticated, segements]);
+    }, [isAuthenticated, isInitialized, isProfileLoading, hasProfile, segments]);
 
     const isProtectedRoute = (): boolean => {
         return protectedRoutes.some((route) =>
-            segements.some((segment) => segment === route)
+            segments.some((segment) => segment === route)
         );
     };
 
-    if (!isInitialized) {
+    if (!isInitialized || isProfileLoading) {
         null;
     }
 

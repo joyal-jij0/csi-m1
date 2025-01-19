@@ -58,7 +58,6 @@ export default function Home() {
                     isRegistrationLive: event.isRegistrationLive,
                 }));
                 setEvents(backendEvents);
-                console.log(backendEvents);
             } catch (error) {
                 setError("Failed to fetch profile data");
             }
