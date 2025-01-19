@@ -35,8 +35,6 @@ function RootLayoutNav() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [isInitialized, setIsInitialized] = useState(false);
-    const [isProfileLoading, setIsProfileLoading] = useState(true);
-    const [hasProfile, setHasProfile] = useState(false)
 
     useEffect(() => {
         const intializeAuth = async () => {
@@ -55,54 +53,18 @@ function RootLayoutNav() {
         intializeAuth();
     }, [dispatch]);
 
-    useEffect(() => {
-        const checkProfile = async () => {
-            if (!isAuthenticated) {
-                setIsProfileLoading(false);
-                return;
-            }
-
-            try {
-                const profileExists = await SecureStorage.getProfileExists();
-                
-                if (profileExists !== null) {
-                    setHasProfile(profileExists);
-                } else {
-                    // Only make API call if we don't have cached value
-                    const response = await api.get('/profile/check/');
-                    const exists = response.data.exists;
-                    await SecureStorage.setProfileExists(exists);
-                    setHasProfile(exists);
-                }
-            } catch (error) {
-                console.error('Error checking profile:', error);
-                setHasProfile(false);
-            } finally {
-                setIsProfileLoading(false);
-            }
-        };
-
-        checkProfile();
-    }, [isAuthenticated]);
-
 
     useEffect(() => {
-        if (!isInitialized) return;
-
+        if (!isInitialized){
+            router.replace("/signin");
+        } 
         const inAuthGroup = segments[0] === "(auth)";
-
         if (!isAuthenticated && !inAuthGroup) {
             router.replace("/signin");
-        } else if (isAuthenticated && !isProfileLoading) {
-            if (inAuthGroup) {
-                if (hasProfile) {
-                    router.replace("/(tabs)");
-                } else {
-                    router.replace("/onBoardingForm");
-                }
-            }
+        } else if (isAuthenticated && inAuthGroup) {
+            router.replace("/onBoardingForm");
         }
-    }, [isAuthenticated, isInitialized, isProfileLoading, hasProfile, segments]);
+    }, [isAuthenticated, segments]);
 
     const isProtectedRoute = (): boolean => {
         return protectedRoutes.some((route) =>
@@ -110,9 +72,10 @@ function RootLayoutNav() {
         );
     };
 
-    if (!isInitialized || isProfileLoading) {
-        null;
+    if (!isInitialized) {
+        null
     }
+
 
     const content = (
         <SafeAreaProvider>

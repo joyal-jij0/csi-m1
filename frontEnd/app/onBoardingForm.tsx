@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Text,
     TextInput,
@@ -8,7 +8,6 @@ import {
     ScrollView,
     Modal,
     FlatList,
-    Button,
     KeyboardAvoidingView,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
@@ -57,6 +56,36 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     const [selectedGender, setSelectedGender] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [profile, setProfile] = useState(null);
+
+
+    useEffect(() => {
+        const checkAndFetchProfile = async () => {
+            try {
+                // Check if profile existence is saved in Secure Store
+                const storedProfileExists = await SecureStorage.getProfileExists();
+                if (storedProfileExists) {
+                // If profile exists, directly navigate to the main screen
+                router.replace("/(tabs)");
+                return;
+            }
+        
+            // If not found in Secure Storage, fetch profile data from the API
+            const response = await api.get("/profile/check");
+            if (response.data.data) {
+                setProfile(response.data.data);
+                await SecureStorage.setProfileExists(true); // Save profile existence in Secure Store
+                router.replace("/(tabs)");
+                }
+            } catch (error) {
+            console.error("Failed to fetch profile data:", error);
+            setError("Failed to fetch profile data");
+            }
+        };
+    
+        checkAndFetchProfile();
+    }, [router]);
+
 
     const yearOptions: string[] = [
         "1st Year",
