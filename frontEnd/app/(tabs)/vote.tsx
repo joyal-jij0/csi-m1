@@ -12,6 +12,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import EventSource from "react-native-sse";
+import api from "@/api/api";
 
 type VotingData = {
     votingStarted: boolean;
@@ -38,7 +39,7 @@ export default function Vote() {
         secondsLeft: 0,
     });
 
-    const handleVotePress = (type: "yes" | "no") => {
+    const handleVotePress = async (type: "yes" | "no") => {
         if (!votingData.votingStarted) return;
 
         Animated.sequence([
@@ -54,8 +55,12 @@ export default function Vote() {
             }),
         ]).start();
 
+        const response = await api.post("/voting/submitVote", {
+            vote: type === "yes",
+        });
+
         setShowSuccessModal(true);
-        console.log(`${type == "yes" ? true : false}`);
+        console.log(`Voted ${type == "yes" ? true : false}`);
     };
 
     // const handleRetry = () => {
@@ -67,12 +72,14 @@ export default function Vote() {
 
     useEffect(() => {
         const es = new EventSource(
-            `http://192.168.29.109:3000/api/v1/voting/getStream`
+            `${process.env.EXPO_PUBLIC_BASE_URL}/voting/getStream`
         );
 
         es.addEventListener("message", (event) => {
-            const data = JSON.parse(event.data);
-            setVotingData(data);
+            if (event.data) {
+                const data = JSON.parse(event.data);
+                setVotingData(data);
+            }
         });
 
         es.addEventListener("error", (event) => {
