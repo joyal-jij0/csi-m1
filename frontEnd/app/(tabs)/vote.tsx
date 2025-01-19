@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -6,15 +6,41 @@ import {
     TouchableOpacity,
     StyleSheet,
     Animated,
+    Modal,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import EventSource from "react-native-sse";
+
+type VotingData = {
+    votingStarted: boolean;
+    performance?: {
+        id: string;
+        name: string;
+        startTime: string | null;
+        performers: string[];
+        image: string;
+        eventId: string;
+        votingStarted: boolean;
+        votingStartedAt: string;
+        votingDuration: number;
+    };
+    secondsLeft: number;
+};
 
 export default function Vote() {
     const [scaleValue] = useState(new Animated.Value(1));
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
+    const [votingData, setVotingData] = useState<VotingData>({
+        votingStarted: false,
+        secondsLeft: 0,
+    });
 
-    const handleVotePress = (type: any) => {
+    const handleVotePress = (type: "yes" | "no") => {
+        if (!votingData.votingStarted) return;
+
         Animated.sequence([
             Animated.timing(scaleValue, {
                 toValue: 0.95,
@@ -28,12 +54,92 @@ export default function Vote() {
             }),
         ]).start();
 
-        if (type === "yes") {
-            console.log("Voted Yes");
-        } else {
-            console.log("Voted No");
-        }
+        setShowSuccessModal(true);
+        console.log(`${type == "yes" ? true : false}`);
     };
+
+    // const handleRetry = () => {
+    //     setIsLoading(true);
+    //     setTimeout(() => {
+    //         setIsLoading(false);
+    //     }, 2000);
+    // };
+
+    useEffect(() => {
+        const es = new EventSource(
+            `http://192.168.29.109:3000/api/v1/voting/getStream`
+        );
+
+        es.addEventListener("message", (event) => {
+            const data = JSON.parse(event.data);
+            setVotingData(data);
+        });
+
+        es.addEventListener("error", (event) => {
+            console.error("An error occurred:", event);
+        });
+
+        return () => {
+            es.close();
+        };
+    }, []);
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    };
+
+    const renderTimer = () => {
+        if (!votingData.votingStarted) return null;
+
+        return (
+            <View style={styles.timerContainer}>
+                <MaterialCommunityIcons
+                    name="timer-outline"
+                    size={24}
+                    color="#FFD700"
+                />
+                <Text style={styles.timerText}>
+                    {votingData.secondsLeft > 0
+                        ? formatTime(votingData.secondsLeft)
+                        : "Time's up!"}
+                </Text>
+            </View>
+        );
+    };
+
+    const renderVotingNotAvailable = () => (
+        <View style={styles.notAvailableContainer}>
+            <MaterialCommunityIcons
+                name="timer-sand"
+                size={60}
+                color="#FF4B8C"
+            />
+            <Text style={styles.notAvailableTitle}>
+                Voting Not Available Yet
+            </Text>
+            <Text style={styles.notAvailableText}>
+                The voting period hasn't started. Please check back later or try
+                again.
+            </Text>
+            {/* <TouchableOpacity
+                style={styles.retryButton}
+                onPress={handleRetry}
+                disabled={isLoading}
+            >
+                <MaterialCommunityIcons
+                    name={isLoading ? "loading" : "refresh"}
+                    size={24}
+                    color="#fff"
+                    style={isLoading && styles.spinningIcon}
+                />
+                <Text style={styles.retryButtonText}>
+                    {isLoading ? "Checking..." : "Check Again"}
+                </Text>
+            </TouchableOpacity> */}
+        </View>
+    );
 
     return (
         <LinearGradient
@@ -42,86 +148,125 @@ export default function Vote() {
             locations={[0, 0.99]}
         >
             <SafeAreaView style={styles.container}>
-                <View>
-                    {/* Header Section */}
-                    <View style={styles.headerSection}>
-                        <Text style={styles.performanceTitle}>
-                            Dance Performance
-                        </Text>
-                        <Text style={styles.performanceSubtitle}>Live Now</Text>
-                    </View>
-
-                    {/* Profile Section */}
-                    <View style={styles.profileContainer}>
-                        <View style={styles.imageWrapper}>
-                            <Image
-                                source={{
-                                    uri: "https://avatars.githubusercontent.com/u/131537713?v=4",
-                                }}
-                                style={styles.profileImage}
-                            />
-                            <View style={styles.badge}>
-                                <Text style={styles.badgeText}>#1</Text>
-                            </View>
+                {votingData.votingStarted && (
+                    <View>
+                        {/* Header Section */}
+                        <View style={styles.headerSection}>
+                            <Text style={styles.performanceTitle}>
+                                {votingData.performance?.name || "Performance"}
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.performanceSubtitle,
+                                    !votingData.votingStarted &&
+                                        styles.notAvailableStatus,
+                                ]}
+                            >
+                                {votingData.votingStarted
+                                    ? "Voting is now available"
+                                    : "Voting not started"}
+                            </Text>
+                            {renderTimer()}
                         </View>
-                        <Text style={styles.name}>Adarshs</Text>
-                        <Text style={styles.category}>Contemporary_Dance</Text>
+
+                        {/* Profile Section */}
+                        <View style={styles.profileContainer}>
+                            <View style={styles.imageWrapper}>
+                                <Image
+                                    source={{
+                                        uri: "https://yt3.googleusercontent.com/ytc/AIdro_n00p_ZePoxDQQ9m1fOAv5f6CPy-GyG97eU5hKHI3wX5cM=s900-c-k-c0x00ffffff-no-rj",
+                                    }}
+                                    style={styles.profileImage}
+                                />
+                                <View style={styles.badge}>
+                                    <Text style={styles.badgeText}>#1</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.name}>
+                                {votingData.performance?.name || "KRSNA"}
+                            </Text>
+                            <Text style={styles.category}>
+                                {votingData.performance?.performers.flatMap(
+                                    (e) => e
+                                ) || "Singer from Pheonix MAIT"}
+                            </Text>
+                        </View>
                     </View>
+                )}
 
-                    {/* Contestant Information */}
-                    <View style={styles.infoCard}>
-                        <Text style={styles.infoTitle}>About Performance</Text>
-                        <Text style={styles.infoText}>
-                            John Doe is a talented performer known for his
-                            outstanding dance moves and creative choreography.
-                            He has been performing for over 5 years and has won
-                            numerous awards in local competitions.
-                        </Text>
+                {/* Conditional Rendering based on voting availability */}
+                {votingData.votingStarted ? (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            onPress={() => handleVotePress("yes")}
+                            activeOpacity={0.8}
+                        >
+                            <Animated.View
+                                style={[
+                                    styles.voteButton,
+                                    styles.yesButton,
+                                    { transform: [{ scale: scaleValue }] },
+                                ]}
+                            >
+                                <MaterialCommunityIcons
+                                    name="thumb-up"
+                                    size={24}
+                                    color="#fff"
+                                />
+                                <Text style={styles.buttonText}>Vote Yes</Text>
+                            </Animated.View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => handleVotePress("no")}
+                            activeOpacity={0.8}
+                        >
+                            <Animated.View
+                                style={[
+                                    styles.voteButton,
+                                    styles.noButton,
+                                    { transform: [{ scale: scaleValue }] },
+                                ]}
+                            >
+                                <MaterialCommunityIcons
+                                    name="thumb-down"
+                                    size={24}
+                                    color="#fff"
+                                />
+                                <Text style={styles.buttonText}>Vote No</Text>
+                            </Animated.View>
+                        </TouchableOpacity>
                     </View>
-                </View>
+                ) : (
+                    renderVotingNotAvailable()
+                )}
 
-                {/* Voting Buttons */}
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        onPress={() => handleVotePress("yes")}
-                        activeOpacity={0.8}
-                    >
-                        <Animated.View
-                            style={[
-                                styles.voteButton,
-                                styles.yesButton,
-                                { transform: [{ scale: scaleValue }] },
-                            ]}
-                        >
+                {/* Success Modal */}
+                <Modal
+                    transparent
+                    visible={showSuccessModal}
+                    onRequestClose={() => setShowSuccessModal(false)}
+                    animationType="fade"
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContent}>
                             <MaterialCommunityIcons
-                                name="thumb-up"
-                                size={24}
-                                color="#fff"
+                                name="check-circle"
+                                size={50}
+                                color="#00ff87"
                             />
-                            <Text style={styles.buttonText}>Vote Yes</Text>
-                        </Animated.View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => handleVotePress("no")}
-                        activeOpacity={0.8}
-                    >
-                        <Animated.View
-                            style={[
-                                styles.voteButton,
-                                styles.noButton,
-                                { transform: [{ scale: scaleValue }] },
-                            ]}
-                        >
-                            <MaterialCommunityIcons
-                                name="thumb-down"
-                                size={24}
-                                color="#fff"
-                            />
-                            <Text style={styles.buttonText}>Vote No</Text>
-                        </Animated.View>
-                    </TouchableOpacity>
-                </View>
+                            <Text style={styles.modalText}>
+                                Vote submitted successfully!
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.modalButton}
+                                onPress={() => setShowSuccessModal(false)}
+                            >
+                                <Text style={styles.modalButtonText}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </SafeAreaView>
         </LinearGradient>
     );
@@ -149,6 +294,24 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontWeight: "600",
     },
+    notAvailableStatus: {
+        color: "#FFD700",
+    },
+    timerContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        marginTop: 16,
+    },
+    timerText: {
+        color: "#FFD700",
+        fontSize: 18,
+        fontWeight: "bold",
+        marginLeft: 8,
+    },
     profileContainer: {
         alignItems: "center",
     },
@@ -165,8 +328,8 @@ const styles = StyleSheet.create({
     },
     badge: {
         position: "absolute",
-        bottom: 0,
-        right: 0,
+        bottom: 5,
+        right: 5,
         backgroundColor: "#FFD700",
         borderRadius: 15,
         width: 30,
@@ -192,31 +355,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 15,
     },
-    infoCard: {
-        // backgroundColor: "rgba(255,255,255,0.05)",
-        backgroundColor: "#000",
-        borderRadius: 20,
-        padding: 20,
-        marginHorizontal: 20,
-    },
-    infoTitle: {
-        color: "#fff",
-        fontSize: 18,
-        fontWeight: "600",
-        marginBottom: 10,
-    },
-    infoText: {
-        color: "#aaa",
-        fontSize: 15,
-        lineHeight: 24,
-    },
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
         paddingHorizontal: 20,
         paddingBottom: 20,
         paddingTop: 20,
-        // backgroundColor: "rgba(0,0,0,0.8)",
     },
     voteButton: {
         flexDirection: "row",
@@ -237,5 +381,77 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         marginLeft: 8,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContent: {
+        backgroundColor: "#000",
+        borderRadius: 12,
+        padding: 20,
+        alignItems: "center",
+        minWidth: 300,
+        borderWidth: 1,
+        borderColor: "#00ff87",
+    },
+    modalText: {
+        color: "#fff",
+        fontSize: 18,
+        textAlign: "center",
+        marginVertical: 15,
+        fontWeight: "600",
+    },
+    modalButton: {
+        backgroundColor: "#00ff87",
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    modalButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    notAvailableContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 30,
+    },
+    notAvailableTitle: {
+        color: "#fff",
+        fontSize: 24,
+        fontWeight: "bold",
+        marginTop: 20,
+        marginBottom: 10,
+        textAlign: "center",
+    },
+    notAvailableText: {
+        color: "#aaa",
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 30,
+        lineHeight: 24,
+    },
+    retryButton: {
+        backgroundColor: "#FF4B8C",
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+    },
+    retryButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginLeft: 8,
+    },
+    spinningIcon: {
+        transform: [{ rotate: "45deg" }],
     },
 });
