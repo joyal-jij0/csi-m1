@@ -47,7 +47,7 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
         //         refreshToken,
         //     }
         // });
-
+        console.log("Access Token generated: ", accessToken)
         return { accessToken, refreshToken };
     } catch (error) {
         const err = error as Error;
