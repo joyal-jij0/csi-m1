@@ -188,6 +188,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import api from "@/api/api";
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
+import Toast from "react-native-toast-message";
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -237,51 +238,59 @@ export default function Signin() {
         setIsLoading(true);
         setError("");
         try {
-
-            await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-
+            await GoogleSignin.hasPlayServices({
+                showPlayServicesUpdateDialog: true,
+            });
+    
             const signInResult = await GoogleSignin.signIn();
     
-            let idToken = signInResult.data?.idToken 
+            let idToken = signInResult.data?.idToken;
     
-            if(!idToken){
-                throw new Error('No ID token found') 
+            if (!idToken) {
+                throw new Error("No ID token found");
             }
     
-            const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data?.idToken!)
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     
-            auth().signInWithCredential(googleCredential) 
-
-            if(signInResult.type === "success"){
+            await auth().signInWithCredential(googleCredential);
+    
+            if (signInResult.type === "success") {
                 const response = await api.post("/user/signIn", {
-                    email: signInResult.data?.user?.email
-                })
-                
-                const { data } = response
+                    email: signInResult.data?.user?.email,
+                });
     
-                const {accessToken, refreshToken, id } = data.data;
+                const { data } = response;
     
-                dispatch(login(accessToken, refreshToken, id))
+                const { accessToken, refreshToken, id } = data.data;
     
-                //TODO: Yha Onboarding Form krna replace
+                dispatch(login(accessToken, refreshToken, id));
+    
                 router.replace("/onBoardingForm");
-                
             }
-            
         } catch (error: any) {
+            let errorMessage = "An error occurred during sign-in.";
             if (error.response) {
-                setError(
-                    `Server error: ${
-                        error.response.data.message || error.response.statusText
-                    }`
-                );
+                errorMessage = `Server error: ${
+                    error.response.data.message || error.response.statusText
+                }`;
             } else if (error.request) {
-                setError(
-                    "No response from server. Please check your internet connection."
-                );
+                errorMessage =
+                    "No response from server. Please check your internet connection.";
             } else {
-                setError(error.message || "An error occurred during sign in");
+                errorMessage = error.message || "An error occurred during sign-in.";
             }
+    
+            // Show error message as toast
+            Toast.show({
+                type: "error",
+                text1: "Sign-In Error",
+                position: "bottom",
+                autoHide: true,
+                visibilityTime: 5000,
+                text2: errorMessage,
+            });
+    
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }

@@ -3,8 +3,9 @@ import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "react-native-reanimated";
+import Toast from 'react-native-toast-message';
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NotifierWrapper } from "react-native-notifier";
@@ -112,9 +113,15 @@ function RootLayoutNav() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             {isProtectedRoute() ? (
-                <NotifierWrapper>{content}</NotifierWrapper>
+                <NotifierWrapper>
+                    {content}
+                    <Toast />
+                </NotifierWrapper>
             ) : (
-                content
+                <>
+                    {content}
+                    <Toast />
+                </>
             )}
         </GestureHandlerRootView>
     );
