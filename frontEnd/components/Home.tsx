@@ -2,7 +2,6 @@ import {
     StyleSheet,
     Pressable,
     FlatList,
-    Image,
     View,
     Text,
     TouchableOpacity,
@@ -16,6 +15,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import api from "@/api/api";
 import { Button } from "tamagui";
+import { Image } from 'expo-image'
 
 export interface Event {
     id: string;
@@ -161,7 +161,7 @@ export default function Home() {
                         <Image
                             source={require("@/assets/images/csi.png")}
                             style={styles.logo}
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                     </View>
                     <TouchableOpacity onPress={() => router.push("/profile")}>

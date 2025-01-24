@@ -1,10 +1,11 @@
-import { View, StyleSheet, Image, ScrollView, Dimensions, Linking } from 'react-native';
+import { View, StyleSheet,  ScrollView, Dimensions, Linking } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { Text } from 'react-native';
 import { Button } from 'tamagui';
+import { Image } from 'expo-image';
 
 const { width } = Dimensions.get('window');
 

@@ -308,7 +308,7 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                             </View>
 
                             <View style={styles.inputGroup}>
-                                <Text style={styles.label}>Program</Text>
+                                <Text style={styles.label}>Course</Text>
                                 <Controller
                                     control={control}
                                     name="program"

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
-    Image,
     TouchableOpacity,
     StyleSheet,
     Animated,
@@ -13,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import EventSource from "react-native-sse";
 import api from "@/api/api";
+import { Image } from "expo-image";
 
 type VotingData = {
     votingStarted: boolean;
@@ -79,6 +79,7 @@ export default function Vote() {
         es.addEventListener("message", (event) => {
             if (event.data) {
                 const data = JSON.parse(event.data);
+                console.log(data)
                 setVotingData(data);
             }
         });
@@ -182,7 +183,7 @@ export default function Vote() {
                             <View style={styles.imageWrapper}>
                                 <Image
                                     source={{
-                                        uri: "https://yt3.googleusercontent.com/ytc/AIdro_n00p_ZePoxDQQ9m1fOAv5f6CPy-GyG97eU5hKHI3wX5cM=s900-c-k-c0x00ffffff-no-rj",
+                                        uri: votingData.performance?.image,
                                     }}
                                     style={styles.profileImage}
                                 />
