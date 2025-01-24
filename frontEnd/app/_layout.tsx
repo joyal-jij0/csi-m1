@@ -18,9 +18,8 @@ import { RootState } from "@/redux/store";
 import { createTamagui, TamaguiProvider, View } from "tamagui";
 import defaultConfig from "@tamagui/config/v3";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import api, { getAccessToken } from "@/api/api";
+import { getAccessToken } from "@/api/api";
 import { setAuthenticated } from "@/redux/features/authSlice";
-import { SecureStorage } from "@/utils/secureStorage";
 const config = createTamagui(defaultConfig);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

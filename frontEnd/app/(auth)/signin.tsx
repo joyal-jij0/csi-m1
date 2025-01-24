@@ -353,8 +353,8 @@ export default function Signin() {
                             borderColor="#ffffff33"
                             onPress={handleSignIn}
                             disabled={isLoading}
-                            opacity={isLoading ? 0.6 : 1}
-                            height={45}
+                            opacity={isLoading ? 0.8 : 1}
+                            height={48}
                         >
                             {isLoading
                                 ? "Signing in..."

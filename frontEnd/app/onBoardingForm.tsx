@@ -14,7 +14,7 @@ import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import api from "@/api/api";
-import { SecureStorage } from "@/utils/secureStorage";
+import { MMKV } from 'react-native-mmkv';
 import { router } from "expo-router";
 
 interface FormData {
@@ -30,6 +30,8 @@ interface FormData {
 interface SignupFormProps {
     onBack: () => void;
 }
+
+const storage = new MMKV();
 
 export default function onBoardingForm({ onBack }: SignupFormProps) {
     const {
@@ -62,30 +64,29 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     useEffect(() => {
         const checkAndFetchProfile = async () => {
             try {
-                // Check if profile existence is saved in Secure Store
-                const storedProfileExists = await SecureStorage.getProfileExists();
+                // Check if profile existence is saved in MMKV
+                const storedProfileExists = storage.getBoolean("profileExists");
                 if (storedProfileExists) {
-                // If profile exists, directly navigate to the main screen
-                router.replace("/(tabs)");
-                return;
-            }
-        
-            // If not found in Secure Storage, fetch profile data from the API
-            const response = await api.get("/profile/check");
-            if (response.data.data) {
-                setProfile(response.data.data);
-                await SecureStorage.setProfileExists(true); // Save profile existence in Secure Store
-                router.replace("/(tabs)");
+                    // If profile exists, directly navigate to the main screen
+                    router.replace("/(tabs)");
+                    return;
+                }
+    
+                // If not found in MMKV, fetch profile data from the API
+                const response = await api.get("/profile/check");
+                if (response.data.data) {
+                    setProfile(response.data.data);
+                    storage.set("profileExists", true); // Save profile existence in MMKV
+                    router.replace("/(tabs)");
                 }
             } catch (error) {
-            console.error("Failed to fetch profile data:", error);
-            setError("Failed to fetch profile data");
+                console.error("Failed to fetch profile data:", error);
+                setError("Failed to fetch profile data");
             }
         };
     
         checkAndFetchProfile();
     }, [router]);
-
 
     const yearOptions: string[] = [
         "1st Year",
@@ -114,7 +115,7 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                 "/profile/create/",
                 transformedData
             );
-            await SecureStorage.setProfileExists(true);
+            storage.set("profileExists", true);
             router.replace('/(tabs)')
         } catch (error: any) {
             setError(error.response?.data.message || "An error occurred");
@@ -509,9 +510,13 @@ const styles = StyleSheet.create({
     },
     modalCloseButton: {
         backgroundColor: "#007BFF",
-        padding: 10,
+        paddingVertical: 14,
+        paddingHorizontal: 10,
         marginTop: 20,
         borderRadius: 8,
+        minHeight: 48,
+        justifyContent: "center",
+        alignItems: "center"
     },
     modalCloseText: {
         color: "#fff",
