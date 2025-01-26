@@ -56,32 +56,11 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     const [genderModalVisible, setGenderModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        const checkAndFetchProfile = async () => {
-            try {
-                const storedProfileExists = storage.getBoolean("profileExists");
-                if (storedProfileExists) {
-                    router.replace("/(tabs)");
-                    return;
-                }
-    
-                const response = await api.get("/profile/check");
-                if (response.data.data) {
-                    storage.set("profileExists", true); 
-                    router.replace("/(tabs)");
-                }
-            } catch (error: any) {
-                Toast.show({
-                    type: "error",
-                    text1: "Profile Creation Failed",
-                    text2: error.response?.data?.message || "Error in checking if profile exists",
-                    position: "bottom",
-                    autoHide: true,
-                    visibilityTime: 3000
-                });
-            }
-        };
-    
-        checkAndFetchProfile();
+        const storedProfileExists = storage.getBoolean("profileExists");
+        if (storedProfileExists) {
+            router.replace("/(tabs)");
+            return;
+        } 
     }, [router]);
 
     const yearOptions: string[] = [

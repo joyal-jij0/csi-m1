@@ -27,32 +27,33 @@ model HealthCheck {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   // refreshToken String?  @unique
   // accessToken  String?  @unique
-  pushToken    String?  @unique
-  isAdmin      Boolean  @default(false)
-  profile      Profile? 
-  createdAt    DateTime @default(now())
-  votes        Vote[]
+  pushToken String?  @unique
+  isAdmin   Boolean  @default(false)
+  profile   Profile?
+  createdAt DateTime @default(now())
+  votes     Vote[]
 }
 
 model Event {
-  id               String        @id @default(cuid())
-  title            String
-  image            String
-  description      String?
-  venue            String
-  performers       String[] // Array of strings
-  type             String
-  registrationLink String?
-  startsAt         DateTime
-  endsAt           DateTime
-  voting           Boolean
-  createdAt        DateTime      @default(now())
-  isRegistrationLive Boolean @default(true)
-  performances     Performance[]
+  id                 String        @id @default(cuid())
+  title              String
+  image              String
+  description        String?
+  venue              String
+  performers         String[] // Array of strings
+  type               String
+  registrationLink   String?
+  ruleBookLink       String?
+  startsAt           DateTime
+  endsAt             DateTime
+  voting             Boolean
+  createdAt          DateTime      @default(now())
+  isRegistrationLive Boolean       @default(true)
+  performances       Performance[]
 }
 
 model Performance {

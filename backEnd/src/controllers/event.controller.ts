@@ -17,7 +17,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req.user as JwtPayload).userId;
     await isAdminCheck(userId);
 
-    const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting } = req.body; 
+    const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting, ruleBookLink } = req.body; 
 
     // Input validation
     if (!title || !venue || !performers || !type || !startsAt || !endsAt || !image || voting === undefined) {
@@ -31,6 +31,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
         !Array.isArray(performers) || 
         typeof type !== "string" ||
         typeof registrationLink !== "string" ||
+        typeof ruleBookLink !== "string" ||
         typeof voting !== "boolean" ||
         isNaN(new Date(startsAt).getTime()) ||
         isNaN(new Date(endsAt).getTime())
@@ -52,6 +53,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
             performers,
             type,
             registrationLink,
+            ruleBookLink,
             startsAt,
             endsAt,
             voting
@@ -72,7 +74,7 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
     await isAdminCheck(userId);
 
     const {eventId} = req.params;
-    const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting } = req.body;
+    const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting, ruleBookLink } = req.body;
 
     // Check if event exists
     const eventCheck = await prisma.event.findUnique({ where: { id: eventId } });
@@ -88,6 +90,7 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
         (req.body.performers && !Array.isArray(req.body.performers)) ||
         (req.body.type && typeof req.body.type !== "string") ||
         (registrationLink && typeof registrationLink !== "string") ||
+        (ruleBookLink && typeof ruleBookLink !== "string") ||
         (req.body.voting !== undefined && typeof req.body.voting !== "boolean") || 
         (req.body.startsAt && isNaN(new Date(req.body.startsAt).getTime())) ||
         (req.body.endsAt && isNaN(new Date(req.body.endsAt).getTime()))
@@ -110,6 +113,7 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
             performers,
             type,
             registrationLink,
+            ruleBookLink,
             startsAt,
             endsAt,
             voting

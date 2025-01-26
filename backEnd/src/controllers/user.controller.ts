@@ -142,6 +142,9 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
     // Check if the user exists
     let user = await prisma.user.findUnique({
         where: { email: email },
+        include: {
+            profile: true
+        }
     });
 
     if (user) {
@@ -149,19 +152,14 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
         // Generate tokens and log in the user
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id);
 
-        // user = await prisma.user.update({
-        //     where: { id: user.id },
-        //     data: { refreshToken },
-        //     include: {
-        //         profile: true
-        //     }
-        // });
+        const profileExists = !!user.profile
 
 
         const userResponse = {
             ...user,
             accessToken,
             refreshToken,
+            profileExists
         } as { [key: string]: any };
 
 
@@ -184,10 +182,13 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
 
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(newUser.id);
 
+        const profileExists = false;
+
         const userResponse = {
             ...newUser,
             accessToken,
             refreshToken,
+            profileExists
         } as { [key: string]: any };
 
         return res.status(201).json(
@@ -200,31 +201,5 @@ const signIn = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
-const logoutUser = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req.user as JwtPayload).userId;
 
-    if (!userId) {
-        throw new ApiError(400, "User not authenticated");
-    }
-
-    // Update the user record to clear the refresh token
-    // await prisma.user.update({
-    //     where: {
-    //         id: userId,
-    //     },
-    //     data: {
-    //         refreshToken: null,
-    //         accessToken: null,
-    //     },
-    // });
-
-    return res.status(200).json(
-        new ApiResponse({
-            statusCode: 200,
-            data: null,
-            message: "User logged out successfully",
-        })
-    );
-});
-
-export {  logoutUser, refreshAccessToken, signIn, pushNotificationToken };
+export { refreshAccessToken, signIn, pushNotificationToken };

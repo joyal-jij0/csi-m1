@@ -31,7 +31,6 @@ function capitalizeEachWord(str: string) {
 
 export default function Profile() {
     const [profile, setProfile] = useState<ProfileProps | null>(null);
-    const [loggingOut, setLoggingOut] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -55,23 +54,8 @@ export default function Profile() {
     }, []);
 
     const handleLogout = async () => {
-        setLoggingOut(true);
-        try {
-            await api.post("/user/logout");
-            dispatch(logout());
-            router.replace("/(auth)/signin");
-        } catch (error) {
-            Toast.show({
-                type: "error",
-                text1: "Failed to Logout",
-                text2: `Error: ${error}`,
-                position: "bottom",
-                autoHide: true,
-                visibilityTime: 3000,
-            });
-        } finally {
-            setLoggingOut(false);
-        }
+        dispatch(logout());
+        router.replace("/(auth)/signin");
     };
 
     if (!profile) {
@@ -173,7 +157,6 @@ export default function Profile() {
 
                                 <Button
                                     onPress={handleLogout}
-                                    disabled={loggingOut}
                                     style={{
                                         backgroundColor: "#DC2626",
                                         marginTop: 48,
@@ -182,7 +165,7 @@ export default function Profile() {
                                         paddingVertical: 8,
                                     }}
                                 >
-                                    {loggingOut ? "Logging out..." : "Logout"}
+                                    Logout
                                 </Button>
                             </View>
                         )}
