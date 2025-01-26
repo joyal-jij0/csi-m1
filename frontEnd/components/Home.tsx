@@ -27,6 +27,7 @@ export interface Event {
     venue: string;
     description: string;
     registrationLink: string;
+    ruleBookLink: string;
     isRegistrationLive: boolean;
 }
 
@@ -53,6 +54,7 @@ export default function Home() {
                 venue: event.venue,
                 description: event.description,
                 registrationLink: event.registrationLink,
+                ruleBookLink: event.ruleBookLink,
                 isRegistrationLive: event.isRegistrationLive,
             }));
             setEvents(backendEvents);

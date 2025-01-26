@@ -55,7 +55,8 @@ export default function EventDetailsScreen() {
                     </View>
 
                     <Text style={styles.description}>{event.description}</Text>
-                    {event.isRegistrationLive && (
+
+                    <View style={styles.buttonContainer} >
                         <Button
                             size="$3"
                             borderColor="#262626"
@@ -63,13 +64,30 @@ export default function EventDetailsScreen() {
                             themeInverse
                             variant="outlined"
                             backgroundColor="#171717"
-                            onPress={() =>
-                                Linking.openURL(event.registrationLink)
-                            }
+                            onPress={() => Linking.openURL(event.ruleBookLink)}
+                            style={{ flex: 1, marginRight: 8 }} 
                         >
-                            Register
+                            Rules
                         </Button>
-                    )}
+
+                        {event.isRegistrationLive && (
+                            <Button
+                                size="$3"
+                                borderColor="#262626"
+                                borderWidth="$0.5"
+                                themeInverse
+                                variant="outlined"
+                                backgroundColor="#FFFFFF" 
+                                color="#171717" 
+                                onPress={() =>
+                                    Linking.openURL(event.registrationLink)
+                                }
+                                style={{ flex: 1 }} 
+                            >
+                                Register
+                            </Button>
+                        )}
+                    </View>
                 </BlurView>
             </ScrollView>
         </SafeAreaView>
@@ -120,4 +138,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 20,
     },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    }
 });
