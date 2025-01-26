@@ -12,7 +12,7 @@ import { BlurView } from "expo-blur";
 import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import api from "@/api/api";
 import { Button } from "tamagui";
 import { Image } from 'expo-image'
