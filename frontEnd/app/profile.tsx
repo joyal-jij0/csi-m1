@@ -3,11 +3,12 @@ import { AppDispatch } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
 import { Button } from "tamagui";
 import { logout } from "@/redux/features/authSlice";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
 
 interface ProfileProps {
     name: string;
@@ -30,8 +31,6 @@ function capitalizeEachWord(str: string) {
 
 export default function Profile() {
     const [profile, setProfile] = useState<ProfileProps | null>(null);
-    const [error, setError] = useState("");
-    const [loggingOut, setLoggingOut] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -40,8 +39,14 @@ export default function Profile() {
                 const response = await api.get("/profile/retrieve/");
                 setProfile(response.data.data);
             } catch (error) {
-                setError("Failed to fetch profile data");
-                console.error(error);
+                Toast.show({
+                    type: "error",
+                    text1: "Failed to fetch profile data",
+                    text2: `Error: ${error}`,
+                    position: "bottom",
+                    autoHide: true,
+                    visibilityTime: 3000,
+                });
             }
         };
 
@@ -49,16 +54,8 @@ export default function Profile() {
     }, []);
 
     const handleLogout = async () => {
-        setLoggingOut(true);
-        try {
-            await api.post("/user/logout");
-            dispatch(logout());
-            router.replace("/(auth)/signin");
-        } catch (error) {
-            setError("Failed to logout. Please try again");
-        } finally {
-            setLoggingOut(false);
-        }
+        dispatch(logout());
+        router.replace("/(auth)/signin");
     };
 
     if (!profile) {
@@ -85,7 +82,8 @@ export default function Profile() {
 
     return (
         <LinearGradient
-            colors={["#000000", "#271146"]}
+            // colors={["#000000", "#271146"]}
+            colors={["#121212", "#000"]}
             style={{ flex: 1 }}
             locations={[0, 0.99]}
         >
@@ -159,16 +157,15 @@ export default function Profile() {
 
                                 <Button
                                     onPress={handleLogout}
-                                    disabled={loggingOut}
                                     style={{
-                                        backgroundColor: "red",
-                                        marginTop: 10,
+                                        backgroundColor: "#DC2626",
+                                        marginTop: 48,
                                         color: "white",
                                         width: "100%",
                                         paddingVertical: 8,
                                     }}
                                 >
-                                    {loggingOut ? "Logging out..." : "Logout"}
+                                    Logout
                                 </Button>
                             </View>
                         )}
@@ -184,6 +181,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     profileContainer: {
+        paddingTop: 20,
         alignItems: "center",
     },
     imageWrapper: {
@@ -229,7 +227,7 @@ const styles = StyleSheet.create({
     infoCard: {
         // backgroundColor: 'rgba(255,255,255,0.05)',
         borderRadius: 20,
-        padding: 10,
+        padding: 16,
         marginHorizontal: 20,
         marginBottom: 25,
         backgroundColor: "#000",
@@ -241,7 +239,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     detailItem: {
-        marginBottom: 15,
+        marginBottom: 8,
         backgroundColor: "#000",
     },
     label: {

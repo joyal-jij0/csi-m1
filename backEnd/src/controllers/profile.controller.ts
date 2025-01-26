@@ -2,8 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import {Request, Response} from "express"
-import { $Enums, User } from "@prisma/client";
-import jwt, {JwtPayload} from 'jsonwebtoken'
+import { $Enums } from "@prisma/client";
+import { JwtPayload } from 'jsonwebtoken'
 import { prisma } from "..";
 
 // profile creation controller:-
@@ -153,37 +153,4 @@ const getProfile = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-
-const profileExists = asyncHandler(async(req: Request, res: Response) => {
-    const userId = (req.user as JwtPayload).userId 
-
-
-    if (!userId) {
-        throw new ApiError(401, "User not authenticated");
-    }
-
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userId,
-        },
-        include: {
-            profile: true,
-        },
-    });
-
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
-
-    const profileExists = !!user.profile;
-
-    return res.status(200).json(
-        new ApiResponse({
-            statusCode: 200,
-            data: profileExists,
-            message: "Profile fetched successfully",
-        })
-    );
-})
-
-export { createProfile, updateProfile, getProfile, profileExists };
+export { createProfile, updateProfile, getProfile };

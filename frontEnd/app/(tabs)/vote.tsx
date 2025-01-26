@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import {  useState, useCallback } from "react";
 import {
     View,
     Text,
@@ -13,6 +13,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import EventSource from "react-native-sse";
 import api from "@/api/api";
 import { Image } from "expo-image";
+import { useFocusEffect } from "expo-router";
+import Toast from "react-native-toast-message";
 
 type VotingData = {
     votingStarted: boolean;
@@ -71,27 +73,37 @@ export default function Vote() {
     //     }, 2000);
     // };
 
-    useEffect(() => {
-        const es = new EventSource(
-            `${process.env.EXPO_PUBLIC_BASE_URL}/voting/getStream`
-        );
-
-        es.addEventListener("message", (event) => {
-            if (event.data) {
-                const data = JSON.parse(event.data);
-                console.log(data)
-                setVotingData(data);
-            }
-        });
-
-        es.addEventListener("error", (event) => {
-            console.error("An error occurred:", event);
-        });
-
-        return () => {
-            es.close();
-        };
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const es = new EventSource(
+                `${process.env.EXPO_PUBLIC_BASE_URL}/voting/getStream`
+            );
+    
+            es.addEventListener("message", (event) => {
+                if (event.data) {
+                    const data = JSON.parse(event.data);
+                    console.log(data);
+                    setVotingData(data);
+                }
+            });
+    
+            es.addEventListener("error", (event) => {
+                console.error("An error occurred:", event);
+                Toast.show({
+                    type: "error",
+                    text1: "Connection Error",
+                    text2: "Failed to connect to the voting stream. Check your network.",
+                    position: "bottom",
+                    autoHide: true,
+                    visibilityTime: 3000
+                });
+            });
+    
+            return () => {
+                es.close(); // Cleanup when the screen is unfocused
+            };
+        }, [])
+    );
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);

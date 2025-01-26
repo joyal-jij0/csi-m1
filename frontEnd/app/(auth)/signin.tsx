@@ -189,6 +189,7 @@ import api from "@/api/api";
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 import Toast from "react-native-toast-message";
+import { MMKV } from "react-native-mmkv";
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -211,6 +212,7 @@ const GoogleIcon = () => (
     </Svg>
 );
 
+const storage = new MMKV();
 
 export default function Signin() {
     const dispatch = useDispatch<AppDispatch>();
@@ -259,12 +261,10 @@ export default function Signin() {
                     email: signInResult.data?.user?.email,
                 });
     
-                const { data } = response;
-    
-                const { accessToken, refreshToken, id } = data.data;
-    
-                dispatch(login(accessToken, refreshToken, id));
-    
+                const { data } = response;    
+                const { accessToken, refreshToken, id, profileExists } = data.data;
+                storage.set("profileExists", profileExists)    
+                dispatch(login(accessToken, refreshToken, id));    
                 router.replace("/onBoardingForm");
             }
         } catch (error: any) {
@@ -314,7 +314,7 @@ export default function Signin() {
                     <View position="relative">
                         <View width="100%" height="100%">
                             <Image
-                                source={require("../../assets/images/csi_image2.jpeg")}
+                                source={require("../../assets/images/csi_image.jpeg")}
                                 style={{ height: "100%", width: "100%" }}
                                 contentFit="cover"
                                 contentPosition={"top"}
@@ -327,7 +327,7 @@ export default function Signin() {
                             bottom={0}
                             height="100%"
                             width="100%"
-                            colors={["#00000000", "#000000"]}
+                            colors={["#00000000", "#120821"]}
                             start={[0, 0]}
                             end={[0, 1]}
                         />
@@ -353,8 +353,8 @@ export default function Signin() {
                             borderColor="#ffffff33"
                             onPress={handleSignIn}
                             disabled={isLoading}
-                            opacity={isLoading ? 0.6 : 1}
-                            height={45}
+                            opacity={isLoading ? 0.8 : 1}
+                            height={48}
                         >
                             {isLoading
                                 ? "Signing in..."

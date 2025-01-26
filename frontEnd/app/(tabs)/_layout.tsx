@@ -1,49 +1,45 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-import { HapticTab } from '@/components/HapticTab';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { withLayoutContext } from "expo-router";
+import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
 
+export const Tabs = withLayoutContext(
+  createNativeBottomTabNavigator().Navigator
+);
 
 export default function TabLayout() {
-
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors['dark'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+      tabBarStyle={{
+        backgroundColor: 'black',
+      }}
+      tabLabelStyle={{
+        fontSize: 12,
+        fontWeight: "bold"
+      }}
+      rippleColor="transparent"
+      labeled={true}
+      hapticFeedbackEnabled={true}
+      activeIndicatorColor="transparent"
+      tabBarActiveTintColor='#fff'
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Events',
-          tabBarIcon: ({ color }) => <MaterialIcons name="event" size={28} color={color} />,
+          tabBarIcon: () => require('../../assets/images/event-icon.png')
         }}
       />
       <Tabs.Screen
-        name='vote'
+        name="vote"
         options={{
-          title: "Vote",
-          tabBarIcon: ({ color }) => <MaterialIcons name="how-to-vote" size={30} color={color} />
+          title: 'Vote',
+          tabBarIcon: () =>  require('../../assets/images/vote-icon.png'),
         }}
-      />
+        />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="compass" size={28} color={color} />,
+          tabBarIcon: () =>  require('../../assets/images/compass-icon.png'),
         }}
       />
     </Tabs>

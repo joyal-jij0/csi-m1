@@ -6,10 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import "react-native-reanimated";
 import Toast from 'react-native-toast-message';
-
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NotifierWrapper } from "react-native-notifier";
-
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "@/redux/store";
 import { RootState } from "@/redux/store";
@@ -18,9 +15,8 @@ import { RootState } from "@/redux/store";
 import { createTamagui, TamaguiProvider, View } from "tamagui";
 import defaultConfig from "@tamagui/config/v3";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import api, { getAccessToken } from "@/api/api";
+import { getAccessToken } from "@/api/api";
 import { setAuthenticated } from "@/redux/features/authSlice";
-import { SecureStorage } from "@/utils/secureStorage";
 const config = createTamagui(defaultConfig);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -77,7 +73,6 @@ function RootLayoutNav() {
         null
     }
 
-
     const content = (
         <SafeAreaProvider>
             <TamaguiProvider config={config}>
@@ -97,7 +92,11 @@ function RootLayoutNav() {
                         />
                         <Stack.Screen
                             name="event/[id]"
-                            options={{ headerShown: false }}
+                            options={{ 
+                                headerShown: true,
+                                headerTransparent: true,
+                                headerTitle: '',
+                            }}
                         />
                         <Stack.Screen
                             name="profile"
@@ -113,10 +112,10 @@ function RootLayoutNav() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             {isProtectedRoute() ? (
-                <NotifierWrapper>
+                <>
                     {content}
                     <Toast />
-                </NotifierWrapper>
+                </>
             ) : (
                 <>
                     {content}
