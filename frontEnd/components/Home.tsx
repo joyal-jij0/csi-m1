@@ -9,13 +9,14 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "@/api/api";
 import { Button } from "tamagui";
 import { Image } from 'expo-image'
+
 
 export interface Event {
     id: string;
@@ -41,29 +42,31 @@ export default function Home() {
     const [error, setError] = useState("");
     const [events, setEvents] = useState<Event[]>([]);
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await api.get("/events/retrieveAll/");
-                const backendEvents = response.data.data.map((event: any) => ({
-                    id: event.id,
-                    title: event.title,
-                    type: event.type,
-                    time: new Date(event.startsAt), // Parse `startsAt` into a Date object
-                    image: event.image,
-                    venue: event.venue,
-                    description: event.description,
-                    registrationLink: event.registrationLink,
-                    isRegistrationLive: event.isRegistrationLive,
-                }));
-                setEvents(backendEvents);
-            } catch (error) {
-                setError("Failed to fetch profile data");
-            }
-        };
+    const fetchEvents = async () => {
+        try {
+            const response = await api.get("/events/retrieveAll/");
+            const backendEvents = response.data.data.map((event: any) => ({
+                id: event.id,
+                title: event.title,
+                type: event.type,
+                time: new Date(event.startsAt), // Parse `startsAt` into a Date object
+                image: event.image,
+                venue: event.venue,
+                description: event.description,
+                registrationLink: event.registrationLink,
+                isRegistrationLive: event.isRegistrationLive,
+            }));
+            setEvents(backendEvents);
+        } catch (error) {
+            setError("Failed to fetch profile data");
+        }
+    };
 
-        fetchEvents();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvents();
+        }, [])
+    );
 
     const renderEventCard = ({ item }: { item: Event }) => (
         <View
