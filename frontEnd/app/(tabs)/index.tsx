@@ -64,6 +64,8 @@ export default function Index(){
                         showInAppNotification(remoteMessage)
                     }
                 )
+
+                return unsubscribe;
             } else {
                 console.log("Permission not granted")
             }

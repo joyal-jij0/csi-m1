@@ -2,7 +2,7 @@ import { View, StyleSheet,  ScrollView, Dimensions, Linking } from 'react-native
 import { BlurView } from 'expo-blur';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Text } from 'react-native';
 import { Button } from 'tamagui';
 import { Image } from 'expo-image';
@@ -24,20 +24,10 @@ export default function EventDetailsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Screen 
-        options={{
-          title: 'Event Details',
-          headerStyle: {
-            backgroundColor: '#000',
-          },
-          headerTintColor: '#fff',
-        }}
-      />
       <ScrollView>
         <Image source={{ uri: event.image }} style={styles.image} />
         <BlurView intensity={80} tint="dark" style={styles.content}>
-          <Text style={styles.title}>{event.title}</Text>
-          
+          <Text style={styles.title}>{event.title}</Text>          
           <View style={styles.infoRow}>
             <Ionicons name="time-outline" size={20} color="#fff" />
             <Text style={styles.infoText}>

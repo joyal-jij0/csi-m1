@@ -73,7 +73,6 @@ function RootLayoutNav() {
         null
     }
 
-
     const content = (
         <SafeAreaProvider>
             <TamaguiProvider config={config}>
@@ -93,7 +92,11 @@ function RootLayoutNav() {
                         />
                         <Stack.Screen
                             name="event/[id]"
-                            options={{ headerShown: false }}
+                            options={{ 
+                                headerShown: true,
+                                headerTransparent: true,
+                                headerTitle: '',
+                            }}
                         />
                         <Stack.Screen
                             name="profile"
