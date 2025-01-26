@@ -142,6 +142,7 @@ export default function Home() {
                                 <Button
                                     size="$3"
                                     theme="blue"
+                                    borderWidth="$0.5"
                                     themeInverse
                                     variant="outlined"
                                     backgroundColor="black"
