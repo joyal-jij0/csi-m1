@@ -1,5 +1,3 @@
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { withLayoutContext } from "expo-router";
 import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
 
@@ -8,8 +6,6 @@ export const Tabs = withLayoutContext(
 );
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       tabBarStyle={{
@@ -23,7 +19,7 @@ export default function TabLayout() {
       labeled={true}
       hapticFeedbackEnabled={true}
       activeIndicatorColor="transparent"
-      tabBarActiveTintColor={Colors["dark"].tint}
+      tabBarActiveTintColor='#fff'
     >
       <Tabs.Screen
         name="index"
