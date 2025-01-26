@@ -327,7 +327,7 @@ export default function Signin() {
                             bottom={0}
                             height="100%"
                             width="100%"
-                            colors={["#00000000", "#000000"]}
+                            colors={["#00000000", "#120821"]}
                             start={[0, 0]}
                             end={[0, 1]}
                         />
