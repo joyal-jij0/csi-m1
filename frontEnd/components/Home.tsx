@@ -15,9 +15,8 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useState } from "react";
 import api from "@/api/api";
 import { Button } from "tamagui";
-import { Image } from 'expo-image'
+import { Image } from "expo-image";
 import Toast from "react-native-toast-message";
-
 
 export interface Event {
     id: string;
@@ -64,8 +63,8 @@ export default function Home() {
                 text2: `Error: ${error}`,
                 position: "bottom",
                 autoHide: true,
-                visibilityTime: 3000
-            })
+                visibilityTime: 3000,
+            });
         }
     };
 
@@ -76,8 +75,7 @@ export default function Home() {
     );
 
     const renderEventCard = ({ item }: { item: Event }) => (
-        <View
-        >
+        <View>
             <Pressable
                 style={styles.eventCard}
                 onPress={() =>
@@ -86,14 +84,26 @@ export default function Home() {
                         params: {
                             id: item.id,
                             eventData: JSON.stringify(item),
+                            imageUrl: item.image,
                         },
                     })
                 }
             >
-                <Image source={{ uri: item.image }} style={styles.cardImage} />
-                <BlurView intensity={80} tint="dark" style={styles.cardContent}>
+                <Image
+                    source={{ uri: item.image }}
+                    style={styles.cardImage}
+                    cachePolicy="memory"
+                />
+                <BlurView intensity={0} tint="dark" style={styles.cardContent}>
                     <LinearGradient
-                        colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.8)"]}
+                        colors={[
+                            "transparent",
+                            "rgba(0,0,0,0.5)",
+                            "rgba(0,0,0,0.7)",
+                            "rgba(0,0,0,0.7)",
+                            "rgba(0,0,0,0.9)",
+                        ]}
+                        locations={[0, 0.2, 0.5, 0.6, 1]}
                         style={styles.gradient}
                     >
                         <Text style={styles.eventTitle}>{item.title}</Text>
@@ -132,6 +142,7 @@ export default function Home() {
                                 <Button
                                     size="$3"
                                     theme="blue"
+                                    borderWidth="$0.5"
                                     themeInverse
                                     variant="outlined"
                                     backgroundColor="black"
