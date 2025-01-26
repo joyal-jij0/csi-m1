@@ -6,10 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import "react-native-reanimated";
 import Toast from 'react-native-toast-message';
-
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NotifierWrapper } from "react-native-notifier";
-
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "@/redux/store";
 import { RootState } from "@/redux/store";
@@ -112,10 +109,10 @@ function RootLayoutNav() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             {isProtectedRoute() ? (
-                <NotifierWrapper>
+                <>
                     {content}
                     <Toast />
-                </NotifierWrapper>
+                </>
             ) : (
                 <>
                     {content}
