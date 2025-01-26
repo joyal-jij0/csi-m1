@@ -10,7 +10,7 @@ import { Image } from 'expo-image';
 const { width } = Dimensions.get('window');
 
 export default function EventDetailsScreen() {
-  const { id, eventData } = useLocalSearchParams();
+  const { id, eventData, imageUrl } = useLocalSearchParams();
 
   if (!eventData) {
     return (
@@ -34,7 +34,7 @@ export default function EventDetailsScreen() {
         }}
       />
       <ScrollView>
-        <Image source={{ uri: event.image }} style={styles.image} />
+        <Image source={{ uri: imageUrl as string }} style={styles.image} cachePolicy="memory" />
         <BlurView intensity={80} tint="dark" style={styles.content}>
           <Text style={styles.title}>{event.title}</Text>
           

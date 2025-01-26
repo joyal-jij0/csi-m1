@@ -86,11 +86,12 @@ export default function Home() {
                         params: {
                             id: item.id,
                             eventData: JSON.stringify(item),
+                            imageUrl: item.image,
                         },
                     })
                 }
             >
-                <Image source={{ uri: item.image }} style={styles.cardImage} />
+                <Image source={{ uri: item.image }} style={styles.cardImage} cachePolicy="memory" />
                 <BlurView intensity={80} tint="dark" style={styles.cardContent}>
                     <LinearGradient
                         colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.8)"]}
