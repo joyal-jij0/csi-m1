@@ -7,7 +7,7 @@ import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import api from "@/api/api";
 import { router } from "expo-router";
-import { Notifier, Easing, NotifierComponents } from "react-native-notifier";
+import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -99,18 +99,12 @@ export default function Index(){
         let title = remoteMessage.notification?.title || "New Notfication";
         let description = remoteMessage.notification?.body || ""
 
-        Notifier.showNotification({
-            title: title,
-            description: description,
-            duration: 3000,
-            showAnimationDuration: 300,
-            showEasing: Easing.bounce,
-            componentProps: {
-                containerStyle: {
-                    marginTop: 50,
-                }
-            },
-            Component: NotifierComponents.Notification
+        Toast.show({
+            type: "info",
+            text1: title,
+            text2: description,
+            position: 'top',
+            autoHide: false,
         })
     }
 
