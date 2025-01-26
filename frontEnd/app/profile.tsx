@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     detailItem: {
-        marginBottom: 15,
+        marginBottom: 8,
         backgroundColor: "#000",
     },
     label: {
