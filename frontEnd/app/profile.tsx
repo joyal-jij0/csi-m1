@@ -41,13 +41,13 @@ export default function Profile() {
                 setProfile(response.data.data);
             } catch (error) {
                 Toast.show({
-                        type: "error",
-                        text1: "Failed to fetch profile data",
-                        text2: `Error: ${error}`,
-                        position: "bottom",
-                        autoHide: true,
-                        visibilityTime: 3000
-                    });
+                    type: "error",
+                    text1: "Failed to fetch profile data",
+                    text2: `Error: ${error}`,
+                    position: "bottom",
+                    autoHide: true,
+                    visibilityTime: 3000,
+                });
             }
         };
 
@@ -67,7 +67,7 @@ export default function Profile() {
                 text2: `Error: ${error}`,
                 position: "bottom",
                 autoHide: true,
-                visibilityTime: 3000
+                visibilityTime: 3000,
             });
         } finally {
             setLoggingOut(false);
@@ -98,7 +98,8 @@ export default function Profile() {
 
     return (
         <LinearGradient
-            colors={["#000000", "#271146"]}
+            // colors={["#000000", "#271146"]}
+            colors={["#121212", "#000"]}
             style={{ flex: 1 }}
             locations={[0, 0.99]}
         >
@@ -174,8 +175,8 @@ export default function Profile() {
                                     onPress={handleLogout}
                                     disabled={loggingOut}
                                     style={{
-                                        backgroundColor: "red",
-                                        marginTop: 10,
+                                        backgroundColor: "#DC2626",
+                                        marginTop: 48,
                                         color: "white",
                                         width: "100%",
                                         paddingVertical: 8,
@@ -197,6 +198,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     profileContainer: {
+        paddingTop: 20,
         alignItems: "center",
     },
     imageWrapper: {
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     infoCard: {
         // backgroundColor: 'rgba(255,255,255,0.05)',
         borderRadius: 20,
-        padding: 10,
+        padding: 16,
         marginHorizontal: 20,
         marginBottom: 25,
         backgroundColor: "#000",
