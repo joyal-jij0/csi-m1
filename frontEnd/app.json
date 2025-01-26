@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "csi-m1",
+    "name": "CSI-IW",
     "slug": "csi-m1",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -27,6 +27,14 @@
     },
     "plugins": [
       "expo-router",
+      "react-native-bottom-tabs",
+      [
+        "expo-build-properties",{
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {
