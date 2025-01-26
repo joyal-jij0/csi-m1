@@ -75,7 +75,7 @@ export default function EventDetailsScreen() {
                     {event.isRegistrationLive && (
                         <Button
                             size="$3"
-                            borderColor='#262626'
+                            borderColor="#262626"
                             borderWidth="$0.5"
                             themeInverse
                             variant="outlined"
