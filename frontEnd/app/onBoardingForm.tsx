@@ -16,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import api from "@/api/api";
 import { MMKV } from 'react-native-mmkv';
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
 
 interface FormData {
     name: string;
@@ -52,36 +53,31 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     });
 
     const [yearModalVisible, setYearModalVisible] = useState<boolean>(false);
-    const [genderModalVisible, setGenderModalVisible] =
-        useState<boolean>(false);
-    const [selectedYear, setSelectedYear] = useState<string>("");
-    const [selectedGender, setSelectedGender] = useState<string>("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [profile, setProfile] = useState(null);
-
+    const [genderModalVisible, setGenderModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
         const checkAndFetchProfile = async () => {
             try {
-                // Check if profile existence is saved in MMKV
                 const storedProfileExists = storage.getBoolean("profileExists");
                 if (storedProfileExists) {
-                    // If profile exists, directly navigate to the main screen
                     router.replace("/(tabs)");
                     return;
                 }
     
-                // If not found in MMKV, fetch profile data from the API
                 const response = await api.get("/profile/check");
                 if (response.data.data) {
-                    setProfile(response.data.data);
-                    storage.set("profileExists", true); // Save profile existence in MMKV
+                    storage.set("profileExists", true); 
                     router.replace("/(tabs)");
                 }
-            } catch (error) {
-                console.error("Failed to fetch profile data:", error);
-                setError("Failed to fetch profile data");
+            } catch (error: any) {
+                Toast.show({
+                    type: "error",
+                    text1: "Profile Creation Failed",
+                    text2: error.response?.data?.message || "Error in checking if profile exists",
+                    position: "bottom",
+                    autoHide: true,
+                    visibilityTime: 3000
+                });
             }
         };
     
@@ -98,8 +94,6 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
     const genderOptions: string[] = ["Male", "Female", "Other"];
 
     const onSubmit = async (data: FormData) => {
-        setLoading(true);
-        setError("");
         try {
             const transformedData = {
                 ...data,
@@ -118,21 +112,23 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
             storage.set("profileExists", true);
             router.replace('/(tabs)')
         } catch (error: any) {
-            setError(error.response?.data.message || "An error occurred");
-            console.error("Error creating profile: ", error);
-        } finally {
-            setLoading(false);
-        }
+            Toast.show({
+                type: "error",
+                text1: "Profile Creation Failed",
+                text2: error.response?.data?.message,
+                position: "bottom",
+                autoHide: true,
+                visibilityTime: 3000
+            });
+        } 
     };
 
     const selectYear = (year: string) => {
-        setSelectedYear(year);
         setValue("year", year);
         setYearModalVisible(false);
     };
 
     const selectGender = (gender: string) => {
-        setSelectedGender(gender);
         setValue("gender", gender);
         setGenderModalVisible(false);
     };

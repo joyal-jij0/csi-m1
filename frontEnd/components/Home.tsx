@@ -16,6 +16,7 @@ import { useCallback, useState } from "react";
 import api from "@/api/api";
 import { Button } from "tamagui";
 import { Image } from 'expo-image'
+import Toast from "react-native-toast-message";
 
 
 export interface Event {
@@ -39,7 +40,6 @@ const formatTime = (date: Date) => {
 };
 
 export default function Home() {
-    const [error, setError] = useState("");
     const [events, setEvents] = useState<Event[]>([]);
 
     const fetchEvents = async () => {
@@ -58,7 +58,14 @@ export default function Home() {
             }));
             setEvents(backendEvents);
         } catch (error) {
-            setError("Failed to fetch profile data");
+            Toast.show({
+                type: "error",
+                text1: "Failed to fetch Events",
+                text2: `Error: ${error}`,
+                position: "bottom",
+                autoHide: true,
+                visibilityTime: 3000
+            })
         }
     };
 

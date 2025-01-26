@@ -1,8 +1,6 @@
 import {
     Image,
     StyleSheet,
-    Text,
-    TouchableOpacity,
     View,
     Animated,
     PanResponder,
@@ -12,7 +10,6 @@ import {
     ImageSourcePropType,
 } from "react-native";
 import React, { useRef } from "react";
-import { router } from "expo-router";
 
 interface Boundaries {
     horizontalBoundary: number;

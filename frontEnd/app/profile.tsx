@@ -3,11 +3,12 @@ import { AppDispatch } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
 import { Button } from "tamagui";
 import { logout } from "@/redux/features/authSlice";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
 
 interface ProfileProps {
     name: string;
@@ -30,7 +31,6 @@ function capitalizeEachWord(str: string) {
 
 export default function Profile() {
     const [profile, setProfile] = useState<ProfileProps | null>(null);
-    const [error, setError] = useState("");
     const [loggingOut, setLoggingOut] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -40,8 +40,14 @@ export default function Profile() {
                 const response = await api.get("/profile/retrieve/");
                 setProfile(response.data.data);
             } catch (error) {
-                setError("Failed to fetch profile data");
-                console.error(error);
+                Toast.show({
+                        type: "error",
+                        text1: "Failed to fetch profile data",
+                        text2: `Error: ${error}`,
+                        position: "bottom",
+                        autoHide: true,
+                        visibilityTime: 3000
+                    });
             }
         };
 
@@ -55,7 +61,14 @@ export default function Profile() {
             dispatch(logout());
             router.replace("/(auth)/signin");
         } catch (error) {
-            setError("Failed to logout. Please try again");
+            Toast.show({
+                type: "error",
+                text1: "Failed to Logout",
+                text2: `Error: ${error}`,
+                position: "bottom",
+                autoHide: true,
+                visibilityTime: 3000
+            });
         } finally {
             setLoggingOut(false);
         }
