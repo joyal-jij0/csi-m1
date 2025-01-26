@@ -142,7 +142,7 @@ export default function Profile() {
                         </View>
 
                         <View style={styles.detailItem}>
-                            <Text style={styles.label}>Program</Text>
+                            <Text style={styles.label}>Course</Text>
                             <Text style={styles.value}>
                                 {capitalizeEachWord(profile!.program)}
                             </Text>
