@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import logger from './logger';
+import { logger } from './logger';
 import { ApiError } from './ApiError';
 
 type AsyncRequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<any> | any;

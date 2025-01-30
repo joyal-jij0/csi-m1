@@ -5,6 +5,7 @@ import {Request, Response} from "express"
 import { User } from "@prisma/client";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { prisma } from "..";
+import { logger } from "../utils/logger";
 
 const isAdminCheck = async (userId: string) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -18,10 +19,11 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
     await isAdminCheck(userId);
 
     const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting, ruleBookLink } = req.body; 
+    logger.info(`Event Object received: ${JSON.stringify(req.body)}`)
 
     // Input validation
     if (!title || !venue || !performers || !type || !startsAt || !endsAt || !image || voting === undefined) {
-        throw new ApiError(400, "All fields (title, venue, performers, type, startsAt, endsAt, voting) except (description, registrationLink) are required");
+        throw new ApiError(400, "All fields (title, image, venue, performers, type, startsAt, endsAt, voting) except (description, registrationLink, ruleBookLink) are required");
     }
    
     if (
@@ -60,6 +62,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
         },
     });
 
+    logger.info(`Event created successfully: ${event.title} by User: ${userId}`);
     return res.status(201).json(
         new ApiResponse<typeof event>({
             statusCode: 201,
@@ -75,6 +78,7 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
 
     const {eventId} = req.params;
     const {title, image, description, venue, performers, type, registrationLink, startsAt, endsAt, voting, ruleBookLink } = req.body;
+    logger.info(`Event Object received: ${JSON.stringify(req.body)}`)
 
     // Check if event exists
     const eventCheck = await prisma.event.findUnique({ where: { id: eventId } });
@@ -119,6 +123,19 @@ const updateEvent = asyncHandler(async (req: Request, res: Response) => {
             voting
         },
     });
+    logger.info(`Event updated successfully: ${event.title} by User: ${userId}`);
+    logger.info(`Updated Items: ${
+    title ? `title: ${title}, ` : ""
+    }${image ? `image: ${image}, ` : ""
+    }${description ? `description: ${description}, ` : ""
+    }${venue ? `venue: ${venue}, ` : ""
+    }${performers ? `performers: ${performers}, ` : ""
+    }${type ? `type: ${type}, ` : ""
+    }${registrationLink ? `registrationLink: ${registrationLink}, ` : ""
+    }${ruleBookLink ? `ruleBookLink: ${ruleBookLink}, ` : ""
+    }${startsAt ? `startsAt: ${startsAt}, ` : ""
+    }${endsAt ? `endsAt: ${endsAt}, ` : ""
+    }${voting ? `voting: ${voting}` : ""}`);
 
     return res.status(200).json(
         new ApiResponse<typeof event>({
@@ -140,6 +157,7 @@ const deleteEvent = asyncHandler(async (req: Request, res: Response) => {
         where: {id: eventId}
     });
 
+    logger.info(`Event deleted successfully: ${eventId} by User: ${userId}`);
     return res.status(200).json(
         new ApiResponse<null>({
             statusCode: 200,
