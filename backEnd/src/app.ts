@@ -1,6 +1,7 @@
 import express, {Express} from "express"
 import http from "http"
 import cors from "cors"
+import { logRequests } from "./middlewares/logger.middleware"
 
 const app: Express = express()
 const server = http.createServer(app)
@@ -13,6 +14,7 @@ app.use(cors({
 app.use(express.json({limit: "50mb"}))
 app.use(express.urlencoded({extended: true, limit: "50mb"}))
 app.use(express.static("public"))
+app.use(logRequests)
 
 import healthcheckRouter from "./routes/healthcheck.routes"
 import userRouter from "./routes/user.routes"
