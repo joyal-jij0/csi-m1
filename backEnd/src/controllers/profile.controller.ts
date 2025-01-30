@@ -5,11 +5,13 @@ import {Request, Response} from "express"
 import { $Enums } from "@prisma/client";
 import { JwtPayload } from 'jsonwebtoken'
 import { prisma } from "..";
+import { logger } from "../utils/logger";
 
 // profile creation controller:-
 
 const createProfile = asyncHandler(async (req: Request, res: Response) => {
     const { name, college, year, program, branch, gender, phone } = req.body;
+    logger.info('Profile Object received: ', JSON.stringify(req.body));
 
     // Extract userId from req.user
     const userId = (req.user as JwtPayload).userId;
@@ -51,6 +53,7 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
         },
     });
 
+    logger.info(`Profile created: ${profile.name} for User: ${userId}`);
     return res.status(201).json(
         new ApiResponse<typeof profile>({
             statusCode: 201,
@@ -65,6 +68,7 @@ const createProfile = asyncHandler(async (req: Request, res: Response) => {
 
 const updateProfile = asyncHandler(async (req: Request, res: Response) => {
     const { name, college, year, program, branch } = req.body;
+    logger.info('Profile Object received: ', JSON.stringify(req.body));
 
     // Extract userId from req.user
     const userId = (req.user as JwtPayload).userId;
@@ -102,6 +106,7 @@ const updateProfile = asyncHandler(async (req: Request, res: Response) => {
         },
     });
 
+    logger.info(`Profile updated: ${updatedProfile.name} for User: ${userId}`);
     return res.status(200).json(
         new ApiResponse<typeof updatedProfile>({
             statusCode: 200,

@@ -4,3 +4,4 @@ package-lock.json
 dist
 csi-m1-firebase-adminsdk.json
 firebase/data.ts
+*.log

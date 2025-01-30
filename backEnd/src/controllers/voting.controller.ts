@@ -5,6 +5,7 @@ import {Request, Response} from "express"
 import { User } from "@prisma/client";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { prisma } from "..";
+import { logger, userLogger } from "../utils/logger";
 
 const isAdminCheck = async (userId: string) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -135,6 +136,7 @@ const startVoting = asyncHandler(async (req: Request, res: Response) => {
         secondsLeft: votingDuration,
     });
 
+    logger.info(`Voting started for performance ${performanceId} by admin ${userId}`);
     res.json({ performance, message: "Voting started successfully." });
 });
 
@@ -156,6 +158,7 @@ const endVoting = asyncHandler(async (req: Request, res: Response) => {
         broadcastToClients({ votingStarted: false });
     }
 
+    logger.info(`Voting ended by admin ${userId}`);
     res.json({ message: "Voting ended successfully." });
 });
 
@@ -190,6 +193,7 @@ const submitVote = asyncHandler(async (req: Request, res: Response) => {
         },
     });
 
+    userLogger.info(`Vote submitted by user ${userId} --> ${vote}`);
     res.status(200).json({ message: "Vote submitted successfully." });
 });
 

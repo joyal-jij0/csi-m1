@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { prisma } from "..";
 import { start } from "repl";
+import { logger } from "../utils/logger";
 
 const isAdminCheck = async (userId: string) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -13,24 +14,13 @@ const isAdminCheck = async (userId: string) => {
         throw new ApiError(403, "Access denied. Admins only!");
     }
 };
-// model Performance {
-//     id         String    @id @default(cuid())
-//     name       String
-//     startTime  DateTime?
-//     performers String[]
-//     image      String?
-//     eventId    String 
-//     event      Event @relation(fields: [eventId], references: [id])
-  
-//     votingStarted  Boolean @default(false)
-//     votingDuration Int?
-//     votes          Vote[]
-//   }
+
 const createPerformance = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req.user as JwtPayload).userId;
     await isAdminCheck(userId);
     
     const { name, startTime, performers, image, eventId } = req.body;
+    logger.info('Performance Object received: ', JSON.stringify(req.body));
 
     if (!name || !startTime || !performers || !eventId) {
         throw new ApiError(400, "All fields (name, startTime, performers, eventId) are required");
@@ -65,6 +55,7 @@ const createPerformance = asyncHandler(async (req: Request, res: Response) => {
         },
 });
 
+    logger.info(`Performance created successfully: ${performance.name} by User: ${userId}`);
     return res.status(201).json(
         new ApiResponse<typeof performance>({
             statusCode: 201,
@@ -80,6 +71,7 @@ const updatePerformance = asyncHandler(async (req: Request, res: Response) => {
 
     const {performanceId} = req.params;
     const {name, startTime, performers, image, eventId} = req.body;
+    logger.info('Performance Object received: ', JSON.stringify(req.body));
 
     // Check if performance exists
     const performanceCheck = await prisma.performance.findUnique({ where: { id: performanceId } });
@@ -121,6 +113,19 @@ const updatePerformance = asyncHandler(async (req: Request, res: Response) => {
         },
     });
 
+    logger.info(`Performance updated successfully: ${performance.name} by User: ${userId}`);
+    logger.info(`Updated Items: ${
+        name ? `name: ${name}, ` : ""
+    }${
+        startTime ? `startTime: ${startTime}, ` : ""
+    }${
+        performers ? `performers: ${performers}, ` : ""
+    }${
+        image ? `image: ${image}, ` : ""
+    }${
+        eventId ? `eventId: ${eventId}` : ""
+    }`)
+
     return res.status(200).json(
         new ApiResponse<typeof performance>({
             statusCode: 200,
@@ -145,6 +150,7 @@ const deletePerformance = asyncHandler(async (req: Request, res: Response) => {
     // Delete performance
     await prisma.performance.delete({ where: { id: performanceId } });
 
+    logger.info(`Performance deleted successfully: ${performanceCheck.name} by User: ${userId}`);
     return res.status(200).json(
         new ApiResponse<null>({
             statusCode: 200,

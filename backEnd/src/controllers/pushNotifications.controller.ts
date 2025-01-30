@@ -5,6 +5,7 @@ import { ApiError } from "../utils/ApiError";
 import { JwtPayload } from "jsonwebtoken";
 import {Request, Response} from "express"
 import { ApiResponse } from "../utils/ApiResponse";
+import { logger } from "../utils/logger";
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,7 @@ export const sendNotification = async (req: Request, res: Response)=> {
     await isAdminCheck(userId);
 
     const {title, body} = req.body;
+    logger.info('Notification Object received: ', JSON.stringify(req.body));
 
     if(!title || !body){
         throw new ApiError(400, "Title and Body are required") 
@@ -86,6 +88,7 @@ export const sendNotification = async (req: Request, res: Response)=> {
                         resp.error
                     );
 
+                    logger.info(`Failed to send notification to token ${pushTokens[idx]}`);
                     return res.status(207).json(
                         new ApiResponse({
                             statusCode: 207,
@@ -103,6 +106,7 @@ export const sendNotification = async (req: Request, res: Response)=> {
             console.log("All notifications sent successfully");
         }
 
+        logger.info(`Notification sent: ${title} by User: ${userId}`);
         return res.status(201).json(
             new ApiResponse({
                 statusCode: 201,
