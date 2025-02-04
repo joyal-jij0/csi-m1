@@ -7,7 +7,7 @@ const healthcheck = asyncHandler(async (req: Request, res: Response) => {
     const response = new ApiResponse({
         statusCode: 200,
         data: a,
-        message: "Everything is alright"
+        message: "Everything is fine!"
     });
     return res
         .status(response.statusCode)
