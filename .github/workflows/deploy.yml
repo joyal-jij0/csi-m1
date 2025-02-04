@@ -1,0 +1,53 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backEnd/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: |
+          cd backEnd
+          npm install --no-package-lock  
+
+      - name: Generate Docker Image Version
+        id: version
+        run: echo "IMAGE_VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Deploy via SSH with Versioning & Rollback
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ~/csi-m1/backEnd
+            echo "Fetching latest code..."
+            git pull --rebase origin main
+            echo "Saving current working container..."
+            docker tag csi-m1:latest csi-m1:previous || true
+            echo "Building new Docker image..."
+            docker build -t csi-m1:${{ env.IMAGE_VERSION }} -t csi-m1:latest .
+            echo "Restarting container..."
+            docker compose up -d --no-deps app || (
+              echo "Deployment failed! Rolling back..." &&
+              docker tag csi-m1:previous csi-m1:latest &&
+              docker compose up -d --no-deps app
+            )
