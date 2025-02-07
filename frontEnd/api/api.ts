@@ -53,8 +53,8 @@ export const refreshTokens = async () => {
     }
 
     try {
-        const response = await api.post("/refresh-token", { refreshToken });
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        const response = await api.post("/user/refresh-token", { refreshToken });
+        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
         await storeTokens(accessToken, newRefreshToken);
         return accessToken;
     } catch (error) {
