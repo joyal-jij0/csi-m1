@@ -34,7 +34,7 @@ export default function EventDetailsScreen() {
                 <Image
                     source={{ uri: event.image }}
                     style={styles.image}
-                    cachePolicy="memory"
+                    cachePolicy="disk"
                 />
                 <BlurView intensity={80} tint="dark" style={styles.content}>
                     <Text style={styles.title}>{event.title}</Text>
@@ -56,33 +56,37 @@ export default function EventDetailsScreen() {
 
                     <Text style={styles.description}>{event.description}</Text>
 
-                    <View style={styles.buttonContainer} >
-                        <Button
-                            size="$3"
-                            borderColor="#262626"
-                            borderWidth="$0.5"
-                            themeInverse
-                            variant="outlined"
-                            backgroundColor="#171717"
-                            onPress={() => Linking.openURL(event.ruleBookLink)}
-                            style={{ flex: 1, marginRight: 8 }} 
-                        >
-                            Rules
-                        </Button>
-
-                        {event.isRegistrationLive && (
+                    <View style={styles.buttonContainer}>
+                        {event.ruleBookLink && (
                             <Button
                                 size="$3"
                                 borderColor="#262626"
                                 borderWidth="$0.5"
                                 themeInverse
                                 variant="outlined"
-                                backgroundColor="#FFFFFF" 
-                                color="#171717" 
+                                backgroundColor="#171717"
+                                onPress={() =>
+                                    Linking.openURL(event.ruleBookLink)
+                                }
+                                style={{ flex: 1, marginRight: 8 }}
+                            >
+                                Rules
+                            </Button>
+                        )}
+
+                        {event.isRegistrationLive && event.registrationLink && (
+                            <Button
+                                size="$3"
+                                borderColor="#262626"
+                                borderWidth="$0.5"
+                                themeInverse
+                                variant="outlined"
+                                backgroundColor="#FFFFFF"
+                                color="#171717"
                                 onPress={() =>
                                     Linking.openURL(event.registrationLink)
                                 }
-                                style={{ flex: 1 }} 
+                                style={{ flex: 1 }}
                             >
                                 Register
                             </Button>
@@ -142,5 +146,5 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-    }
+    },
 });

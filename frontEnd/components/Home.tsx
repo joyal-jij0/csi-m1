@@ -94,7 +94,7 @@ export default function Home() {
                 <Image
                     source={{ uri: item.image }}
                     style={styles.cardImage}
-                    cachePolicy="memory"
+                    cachePolicy="disk"
                 />
                 <BlurView intensity={0} tint="dark" style={styles.cardContent}>
                     <LinearGradient

@@ -32,6 +32,7 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
         typeof venue !== "string" ||
         !Array.isArray(performers) || 
         typeof type !== "string" ||
+        typeof image !== "string" ||
         typeof registrationLink !== "string" ||
         typeof ruleBookLink !== "string" ||
         typeof voting !== "boolean" ||
@@ -39,7 +40,19 @@ const createEvent = asyncHandler(async (req: Request, res: Response) => {
         isNaN(new Date(endsAt).getTime())
     ) {
         throw new ApiError(400, "Invalid input types");
-    }    
+    }
+    
+    const urlRegex = /^https:\/\//;
+    if (registrationLink !== undefined && !urlRegex.test(registrationLink)) {
+        throw new ApiError(400, "registrationLink must start with 'https://'");
+    }
+    if (ruleBookLink !== undefined && !urlRegex.test(ruleBookLink)) {
+        throw new ApiError(400, "ruleBookLink must start with 'https://'");
+    }
+
+    if(!urlRegex.test(image)){
+        throw new ApiError(400, "images must start with 'https://'")
+    }
 
     if (new Date(startsAt) >= new Date(endsAt)) {
         throw new ApiError(400, "Start time must be before end time!");
