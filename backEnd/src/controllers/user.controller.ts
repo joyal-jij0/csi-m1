@@ -31,23 +31,13 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
         const generateRefreshToken = () => {
             return jwt.sign(
                 { userId: user.id },
-                process.env.REFRESH_TOKEN_SECRET!,
-                { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+                process.env.REFRESH_TOKEN_SECRET!
             );
         };
 
         const accessToken = generateAccessToken();
         const refreshToken = generateRefreshToken();
         userLogger.warn(`Access token generated for user with id ${userId} ---> ${accessToken}`);
-        // await prisma.user.update({
-        //     where: {
-        //         id: user.id,
-        //     },
-        //     data: {
-        //         accessToken,
-        //         refreshToken,
-        //     }
-        // });
         return { accessToken, refreshToken };
     } catch (error) {
         const err = error as Error;
