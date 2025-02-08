@@ -76,7 +76,7 @@ export default function Home() {
         }, [])
     );
 
-    const renderEventCard = ({ item }: { item: Event }) => (
+    const renderEventCard = useCallback( ({ item }: { item: Event }) => (
         <View>
             <Pressable
                 style={styles.eventCard}
@@ -170,7 +170,7 @@ export default function Home() {
                 </BlurView>
             </Pressable>
         </View>
-    );
+    ), []);
 
     return (
         <LinearGradient
