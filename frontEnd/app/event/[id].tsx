@@ -4,6 +4,7 @@ import {
     ScrollView,
     Dimensions,
     Linking,
+    Alert,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +19,8 @@ const { width } = Dimensions.get("window");
 export default function EventDetailsScreen() {
     const { id, eventData, imageUrl } = useLocalSearchParams();
 
+    const urlRegex = /^https:\/\//;
+
     if (!eventData) {
         return (
             <SafeAreaView style={styles.container}>
@@ -25,6 +28,14 @@ export default function EventDetailsScreen() {
             </SafeAreaView>
         );
     }
+
+    const handleOpenUrl = (url: string, urlType: string) => {
+        if (urlRegex.test(url)) {
+            Linking.openURL(url);
+        } else {
+            Alert.alert("Invalid URL", `${urlType} must start with "https://".`);
+        }
+    };
 
     const event = JSON.parse(eventData as string);
 
@@ -66,7 +77,7 @@ export default function EventDetailsScreen() {
                                 variant="outlined"
                                 backgroundColor="#171717"
                                 onPress={() =>
-                                    Linking.openURL(event.ruleBookLink)
+                                    handleOpenUrl(event.ruleBookLink, "Rule book link")
                                 }
                                 style={{ flex: 1, marginRight: 8 }}
                             >
@@ -84,7 +95,7 @@ export default function EventDetailsScreen() {
                                 backgroundColor="#FFFFFF"
                                 color="#171717"
                                 onPress={() =>
-                                    Linking.openURL(event.registrationLink)
+                                    handleOpenUrl(event.registrationLink, "Registration link")
                                 }
                                 style={{ flex: 1 }}
                             >
