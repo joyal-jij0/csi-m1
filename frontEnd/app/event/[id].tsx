@@ -17,7 +17,7 @@ import { Image } from "expo-image";
 const { width } = Dimensions.get("window");
 
 export default function EventDetailsScreen() {
-    const { id, eventData, imageUrl } = useLocalSearchParams();
+    const { eventData } = useLocalSearchParams();
 
     const urlRegex = /^https:\/\//;
 

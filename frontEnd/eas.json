@@ -1,17 +1,28 @@
 {
     "cli": {
-        "version": ">= 13.2.3"
+        "version": ">= 13.2.3",
+        "appVersionSource": "remote"
     },
     "build": {
         "preview": {
             "android": {
                 "buildType": "apk"
+            },
+            "env": {
+                "EXPO_PUBLIC_BASE_URL":"https://mobile-be.csiinnowave.com/api/v1",
+                "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID":"251038343151-qcf84ri4e89q69fn0jcm6hcar37ulkf8.apps.googleusercontent.com"
             }
         },
         "development": {
             "developmentClient": true,
             "distribution": "internal"
         },
-        "production": {}
+        "production": {
+            "autoIncrement": true,
+            "env": {
+                "EXPO_PUBLIC_BASE_URL":"https://mobile-be.csiinnowave.com/api/v1",
+                "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID":"251038343151-qcf84ri4e89q69fn0jcm6hcar37ulkf8.apps.googleusercontent.com"
+            }
+        }
     }
 }

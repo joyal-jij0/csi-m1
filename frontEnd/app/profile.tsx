@@ -82,20 +82,14 @@ export default function Profile() {
 
     return (
         <LinearGradient
-            // colors={["#000000", "#271146"]}
             colors={["#121212", "#000"]}
             style={{ flex: 1 }}
             locations={[0, 0.99]}
         >
             <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    {/* Profile Section */}
                     <View style={styles.profileContainer}>
                         <View style={styles.imageWrapper}>
-                            {/* <Image
-                                source={{ uri: imageUrl }}
-                                style={styles.profileImage}
-                            /> */}
                             <MaterialCommunityIcons
                                 name="account-circle-outline"
                                 size={80}
@@ -225,7 +219,6 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     infoCard: {
-        // backgroundColor: 'rgba(255,255,255,0.05)',
         borderRadius: 20,
         padding: 16,
         marginHorizontal: 20,
