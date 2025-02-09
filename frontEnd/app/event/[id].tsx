@@ -5,6 +5,7 @@ import {
     Dimensions,
     Linking,
     Alert,
+    ActivityIndicator,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,10 +14,12 @@ import { useLocalSearchParams } from "expo-router";
 import { Text } from "react-native";
 import { Button } from "tamagui";
 import { Image } from "expo-image";
+import { useState } from "react";
 
 const { width } = Dimensions.get("window");
 
 export default function EventDetailsScreen() {
+    const [imageLoading, setImageLoading] = useState(true);
     const { eventData } = useLocalSearchParams();
 
     const urlRegex = /^https:\/\//;
@@ -33,7 +36,10 @@ export default function EventDetailsScreen() {
         if (urlRegex.test(url)) {
             Linking.openURL(url);
         } else {
-            Alert.alert("Invalid URL", `${urlType} must start with "https://".`);
+            Alert.alert(
+                "Invalid URL",
+                `${urlType} must start with "https://".`
+            );
         }
     };
 
@@ -46,7 +52,12 @@ export default function EventDetailsScreen() {
                     source={{ uri: event.image }}
                     style={styles.image}
                     cachePolicy="disk"
+                    onLoadStart={() => setImageLoading(true)}
+                    onLoadEnd={() => setImageLoading(false)}
                 />
+                {imageLoading && (
+                    <ActivityIndicator size="large" style={styles.spinner} />
+                )}
                 <BlurView intensity={80} tint="dark" style={styles.content}>
                     <Text style={styles.title}>{event.title}</Text>
                     <View style={styles.infoRow}>
@@ -77,7 +88,10 @@ export default function EventDetailsScreen() {
                                 variant="outlined"
                                 backgroundColor="#171717"
                                 onPress={() =>
-                                    handleOpenUrl(event.ruleBookLink, "Rule book link")
+                                    handleOpenUrl(
+                                        event.ruleBookLink,
+                                        "Rule book link"
+                                    )
                                 }
                                 style={{ flex: 1, marginRight: 8 }}
                             >
@@ -95,7 +109,10 @@ export default function EventDetailsScreen() {
                                 backgroundColor="#FFFFFF"
                                 color="#171717"
                                 onPress={() =>
-                                    handleOpenUrl(event.registrationLink, "Registration link")
+                                    handleOpenUrl(
+                                        event.registrationLink,
+                                        "Registration link"
+                                    )
                                 }
                                 style={{ flex: 1 }}
                             >
@@ -157,5 +174,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+    },
+    spinner: {
+        position: "absolute",
+        top: "25%",
+        left: "50%",
+        // Adjust the translation so the spinner is centered
+        transform: [{ translateX: -12 }, { translateY: -12 }],
     },
 });
