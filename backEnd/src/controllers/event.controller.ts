@@ -203,7 +203,36 @@ const getEvent = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-const getAllEvents = asyncHandler(async (req: Request, res: Response) => {
+const getSortedEvents = asyncHandler(async (req: Request, res: Response) => {
+    // Fetch all events from the database
+    const events = await prisma.event.findMany();
+
+    // Check if no events exist
+    if (!events || events.length === 0) {
+        throw new ApiError(404, "No events found");
+    }
+
+    // Filter by start time
+    const currentTime = new Date()
+    const sortedEvents = events
+        .filter( event => new Date(event.startsAt) > currentTime)
+        .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+
+    // Return events
+    return res.status(200).json(
+        new ApiResponse<typeof events>({
+            statusCode: 200,
+            data: sortedEvents,
+            message: "Events retrieved successfully",
+        })
+    );
+});
+
+
+const getEvents = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req.user as JwtPayload).userId;
+    await isAdminCheck(userId);
+
     // Fetch all events from the database
     const events = await prisma.event.findMany();
 
@@ -213,59 +242,6 @@ const getAllEvents = asyncHandler(async (req: Request, res: Response) => {
     }
 
     // Return events
-    return res.status(200).json(
-        new ApiResponse<typeof events>({
-            statusCode: 200,
-            data: events,
-            message: "Events retrieved successfully",
-        })
-    );
-});
-
-
-const getEvents = asyncHandler(async (req: Request, res: Response) => {
-    const { type, startsAfter, endsBefore } = req.query;
-
-    // Optional query filters
-    const filters: any = {};
-
-    // Filter by type
-    if (type) {
-        if (typeof type !== "string") {
-            throw new ApiError(400, "Invalid type filter");
-        }
-        filters.type = type;
-    }
-
-    // Filter by start time
-    if (startsAfter) {
-        const startsAfterDate = new Date(startsAfter as string);
-        if (isNaN(startsAfterDate.getTime())) {
-            throw new ApiError(400, "Invalid startsAfter date");
-        }
-        filters.startsAt = { gte: startsAfterDate };
-    }
-
-    // Filter by end time
-    if (endsBefore) {
-        const endsBeforeDate = new Date(endsBefore as string);
-        if (isNaN(endsBeforeDate.getTime())) {
-            throw new ApiError(400, "Invalid endsBefore date");
-        }
-        filters.endsAt = { lte: endsBeforeDate };
-    }
-
-    // Fetch filtered events
-    const events = await prisma.event.findMany({
-        where: filters,
-        orderBy: { startsAt: "asc" }, // Order events by start time
-    });
-
-    // Handle no events found
-    if (events.length === 0) {
-        throw new ApiError(404, "No events found matching the criteria");
-    }
-
     return res.status(200).json(
         new ApiResponse<typeof events>({
             statusCode: 200,
@@ -346,4 +322,4 @@ const getTopThree = async (req: any, res: any) => {
 
 
 
-export {createEvent, updateEvent, deleteEvent, getEvent, getEvents, getTopThree, getAllEvents}
+export {createEvent, updateEvent, deleteEvent, getEvent, getEvents, getTopThree, getSortedEvents}
