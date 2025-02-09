@@ -1,20 +1,21 @@
-import {  useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
+    StyleSheet,
     View,
     Text,
-    TouchableOpacity,
-    StyleSheet,
     Animated,
+    ActivityIndicator,
+    TouchableOpacity,
     Modal,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import EventSource from "react-native-sse";
-import api from "@/api/api";
-import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
+import EventSource from "react-native-sse";
 import Toast from "react-native-toast-message";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import api from "@/api/api";
 
 type VotingData = {
     votingStarted: boolean;
@@ -32,14 +33,88 @@ type VotingData = {
     secondsLeft: number;
 };
 
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
+
 export default function Vote() {
     const [scaleValue] = useState(new Animated.Value(1));
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
-    // const [isLoading, setIsLoading] = useState(false);
     const [votingData, setVotingData] = useState<VotingData>({
         votingStarted: false,
         secondsLeft: 0,
     });
+    const [imageLoading, setImageLoading] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            const es = new EventSource(
+                `${process.env.EXPO_PUBLIC_BASE_URL}/voting/getStream`
+            );
+
+            es.addEventListener("message", (event) => {
+                if (event.data) {
+                    const data = JSON.parse(event.data);
+                    setVotingData(data);
+                }
+            });
+
+            es.addEventListener("error", (event) => {
+                Toast.show({
+                    type: "error",
+                    text1: "Connectoin Error",
+                    text2: "Failed to connect to the voting stream. Check your network",
+                    position: "bottom",
+                    autoHide: true,
+                    visibilityTime: 3000,
+                });
+            });
+
+            return () => {
+                es.close();
+            };
+        }, [])
+    );
+
+    const renderVotingNotAvailable = () => {
+        return (
+            <View style={styles.notAvailableContainer}>
+                <MaterialCommunityIcons
+                    name="timer-sand"
+                    size={60}
+                    color="#FF4B8C"
+                />
+                <Text style={styles.notAvailableTitle}>
+                    Voting Not Available Yet
+                </Text>
+                <Text style={styles.notAvailableText}>
+                    The voting period hasn't started. Please check back later or try
+                    again.
+                </Text>
+            </View>
+        );
+    };
+
+    const renderTimer = () => {
+        if (!votingData.votingStarted) return null;
+
+        return (
+            <View style={styles.timerContainer}>
+                <MaterialCommunityIcons
+                    name="timer-outline"
+                    size={24}
+                    color="#FFD700"
+                />
+                <Text style={styles.timerText}>
+                    {votingData.secondsLeft > 0
+                        ? formatTime(votingData.secondsLeft)
+                        : "Time's up!"}
+                </Text>
+            </View>
+        );
+    };
 
     const handleVotePress = async (type: "yes" | "no") => {
         if (!votingData.votingStarted) return;
@@ -66,203 +141,90 @@ export default function Vote() {
         console.log(`Voted ${type == "yes" ? true : false}`);
     };
 
-    // const handleRetry = () => {
-    //     setIsLoading(true);
-    //     setTimeout(() => {
-    //         setIsLoading(false);
-    //     }, 2000);
-    // };
-
-    useFocusEffect(
-        useCallback(() => {
-            const es = new EventSource(
-                `${process.env.EXPO_PUBLIC_BASE_URL}/voting/getStream`
-            );
-    
-            es.addEventListener("message", (event) => {
-                if (event.data) {
-                    const data = JSON.parse(event.data);
-                    console.log(data);
-                    setVotingData(data);
-                }
-            });
-    
-            es.addEventListener("error", (event) => {
-                console.error("An error occurred:", event);
-                Toast.show({
-                    type: "error",
-                    text1: "Connection Error",
-                    text2: "Failed to connect to the voting stream. Check your network.",
-                    position: "bottom",
-                    autoHide: true,
-                    visibilityTime: 3000
-                });
-            });
-    
-            return () => {
-                es.close(); // Cleanup when the screen is unfocused
-            };
-        }, [])
-    );
-
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-    };
-
-    const renderTimer = () => {
-        if (!votingData.votingStarted) return null;
-
-        return (
-            <View style={styles.timerContainer}>
-                <MaterialCommunityIcons
-                    name="timer-outline"
-                    size={24}
-                    color="#FFD700"
-                />
-                <Text style={styles.timerText}>
-                    {votingData.secondsLeft > 0
-                        ? formatTime(votingData.secondsLeft)
-                        : "Time's up!"}
-                </Text>
-            </View>
-        );
-    };
-
-    const renderVotingNotAvailable = () => (
-        <View style={styles.notAvailableContainer}>
-            <MaterialCommunityIcons
-                name="timer-sand"
-                size={60}
-                color="#FF4B8C"
-            />
-            <Text style={styles.notAvailableTitle}>
-                Voting Not Available Yet
-            </Text>
-            <Text style={styles.notAvailableText}>
-                The voting period hasn't started. Please check back later or try
-                again.
-            </Text>
-            {/* <TouchableOpacity
-                style={styles.retryButton}
-                onPress={handleRetry}
-                disabled={isLoading}
-            >
-                <MaterialCommunityIcons
-                    name={isLoading ? "loading" : "refresh"}
-                    size={24}
-                    color="#fff"
-                    style={isLoading && styles.spinningIcon}
-                />
-                <Text style={styles.retryButtonText}>
-                    {isLoading ? "Checking..." : "Check Again"}
-                </Text>
-            </TouchableOpacity> */}
-        </View>
-    );
-
     return (
         <LinearGradient
             colors={["#000000", "#271146"]}
             style={{ flex: 1 }}
             locations={[0, 0.99]}
         >
-            <SafeAreaView style={styles.container}>
-                {votingData.votingStarted && (
-                    <View>
-                        {/* Header Section */}
-                        <View style={styles.headerSection}>
-                            <Text style={styles.performanceTitle}>
-                                {votingData.performance?.name || "Performance"}
-                            </Text>
-                            <Text
-                                style={[
-                                    styles.performanceSubtitle,
-                                    !votingData.votingStarted &&
-                                        styles.notAvailableStatus,
-                                ]}
-                            >
-                                {votingData.votingStarted
-                                    ? "Voting is now available"
-                                    : "Voting not started"}
-                            </Text>
-                            {renderTimer()}
-                        </View>
-
-                        {/* Profile Section */}
-                        <View style={styles.profileContainer}>
-                            <View style={styles.imageWrapper}>
-                                <Image
-                                    source={{
-                                        uri: votingData.performance?.image,
-                                    }}
-                                    style={styles.profileImage}
-                                />
-                                <View style={styles.badge}>
-                                    <Text style={styles.badgeText}>#1</Text>
-                                </View>
-                            </View>
-                            <Text style={styles.name}>
-                                {votingData.performance?.name || "KRSNA"}
-                            </Text>
-                            <Text style={styles.category}>
-                                {votingData.performance?.performers.flatMap(
-                                    (e) => e
-                                ) || "Singer from Pheonix MAIT"}
-                            </Text>
-                        </View>
-                    </View>
-                )}
-
-                {/* Conditional Rendering based on voting availability */}
+            <SafeAreaView style={{flex: 1}}>
                 {votingData.votingStarted ? (
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={() => handleVotePress("yes")}
-                            activeOpacity={0.8}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.voteButton,
-                                    styles.yesButton,
-                                    { transform: [{ scale: scaleValue }] },
-                                ]}
-                            >
-                                <MaterialCommunityIcons
-                                    name="thumb-up"
-                                    size={24}
-                                    color="#fff"
+                    <View style={styles.topSection}>
+                        {renderTimer()}
+                        <View style={styles.imageContainer}>
+                            <Image
+                                source={{
+                                    uri: votingData.performance?.image,
+                                }}
+                                style={styles.image}
+                                contentFit="cover"
+                                transition={1000}
+                                onLoadStart={() => setImageLoading(true)}
+                                onLoadEnd={() => setImageLoading(false)}
+                            />
+                            {imageLoading && (
+                                <ActivityIndicator
+                                    size="large"
+                                    color="#FF4B8C"
+                                    style={styles.spinner}
                                 />
-                                <Text style={styles.buttonText}>Vote Yes</Text>
-                            </Animated.View>
-                        </TouchableOpacity>
+                            )}
+                        </View>
+                        <Text style={styles.title}>
+                            {votingData.performance?.name}
+                        </Text>
 
-                        <TouchableOpacity
-                            onPress={() => handleVotePress("no")}
-                            activeOpacity={0.8}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.voteButton,
-                                    styles.noButton,
-                                    { transform: [{ scale: scaleValue }] },
-                                ]}
+                        <Text style={styles.subtitle}>Liked it ?</Text>
+
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                onPress={() => handleVotePress("yes")}
+                                activeOpacity={0.8}
                             >
-                                <MaterialCommunityIcons
-                                    name="thumb-down"
-                                    size={24}
-                                    color="#fff"
-                                />
-                                <Text style={styles.buttonText}>Vote No</Text>
-                            </Animated.View>
-                        </TouchableOpacity>
+                                <Animated.View
+                                    style={[
+                                        styles.voteButton,
+                                        styles.yesButton,
+                                        { transform: [{ scale: scaleValue }] },
+                                    ]}
+                                >
+                                    <MaterialCommunityIcons
+                                        name="thumb-up"
+                                        size={24}
+                                        color="#fff"
+                                    />
+                                    <Text style={styles.buttonText}>
+                                        Vote Yes
+                                    </Text>
+                                </Animated.View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => handleVotePress("no")}
+                                activeOpacity={0.8}
+                            >
+                                <Animated.View
+                                    style={[
+                                        styles.voteButton,
+                                        styles.noButton,
+                                        { transform: [{ scale: scaleValue }] },
+                                    ]}
+                                >
+                                    <MaterialCommunityIcons
+                                        name="thumb-down"
+                                        size={24}
+                                        color="#fff"
+                                    />
+                                    <Text style={styles.buttonText}>
+                                        Vote No
+                                    </Text>
+                                </Animated.View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 ) : (
                     renderVotingNotAvailable()
                 )}
 
-                {/* Success Modal */}
                 <Modal
                     transparent
                     visible={showSuccessModal}
@@ -294,29 +256,49 @@ export default function Vote() {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    // container: {
+    //     flex: 1,
+    // },
+    check: {
+        color: "white",
+        fontSize: 30,
+    },
+    notAvailableContainer: {
         flex: 1,
-        paddingTop: 15,
-    },
-    headerSection: {
-        paddingHorizontal: 20,
+        justifyContent: "center",
         alignItems: "center",
-        marginBottom: 20,
+        paddingHorizontal: 30,
     },
-    performanceTitle: {
+    notAvailableTitle: {
         color: "#fff",
+        fontSize: 24,
+        fontWeight: "bold",
+        marginTop: 20,
+        marginBottom: 10,
+        textAlign: "center",
+    },
+    notAvailableText: {
+        color: "#aaa",
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 30,
+        lineHeight: 24,
+    },
+    topSection: {
+        alignItems: "center",
+    },
+    title: {
+        color: "#FF4B8C",
         fontSize: 28,
         fontWeight: "700",
         letterSpacing: 0.5,
+        marginTop: 10,
     },
-    performanceSubtitle: {
-        color: "#FF4B8C",
-        fontSize: 16,
-        marginTop: 5,
+    subtitle: {
+        color: "#fff",
+        fontSize: 20,
+        marginTop: 30,
         fontWeight: "600",
-    },
-    notAvailableStatus: {
-        color: "#FFD700",
     },
     timerContainer: {
         flexDirection: "row",
@@ -333,54 +315,23 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginLeft: 8,
     },
-    profileContainer: {
+    imageContainer: {
         alignItems: "center",
-    },
-    imageWrapper: {
-        position: "relative",
-        marginBottom: 15,
-    },
-    profileImage: {
-        width: 140,
-        height: 140,
-        borderRadius: 70,
-        borderWidth: 3,
-        borderColor: "#FF4B8C",
-    },
-    badge: {
-        position: "absolute",
-        bottom: 5,
-        right: 5,
-        backgroundColor: "#FFD700",
-        borderRadius: 15,
-        width: 30,
-        height: 30,
         justifyContent: "center",
-        alignItems: "center",
-        borderWidth: 2,
-        borderColor: "#000",
+        marginTop: 20,
+        width: "100%",
     },
-    badgeText: {
-        color: "#000",
-        fontWeight: "bold",
-        fontSize: 12,
-    },
-    name: {
-        color: "#fff",
-        fontSize: 26,
-        fontWeight: "bold",
-        marginBottom: 5,
-    },
-    category: {
-        color: "#aaa",
-        fontSize: 16,
-        marginBottom: 15,
+    image: {
+        width: 300,
+        height: 300,
+        borderRadius: 15,
     },
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
-        paddingHorizontal: 20,
-        paddingBottom: 20,
+        gap: 20,
+        // paddingHorizontal: 20,
+        // paddingBottom: 20,
         paddingTop: 20,
     },
     voteButton: {
@@ -392,16 +343,19 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     yesButton: {
-        backgroundColor: "#00ff87",
+        backgroundColor: "#22c55e",
     },
     noButton: {
-        backgroundColor: "#FF4B8C",
+        backgroundColor: "#ef4444",
     },
     buttonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
         marginLeft: 8,
+    },
+    spinner: {
+        position: "absolute",
     },
     modalOverlay: {
         flex: 1,
@@ -436,43 +390,5 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
-    },
-    notAvailableContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 30,
-    },
-    notAvailableTitle: {
-        color: "#fff",
-        fontSize: 24,
-        fontWeight: "bold",
-        marginTop: 20,
-        marginBottom: 10,
-        textAlign: "center",
-    },
-    notAvailableText: {
-        color: "#aaa",
-        fontSize: 16,
-        textAlign: "center",
-        marginBottom: 30,
-        lineHeight: 24,
-    },
-    retryButton: {
-        backgroundColor: "#FF4B8C",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 24,
-        borderRadius: 12,
-    },
-    retryButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-        marginLeft: 8,
-    },
-    spinningIcon: {
-        transform: [{ rotate: "45deg" }],
     },
 });
