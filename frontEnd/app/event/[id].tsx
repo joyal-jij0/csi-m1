@@ -108,12 +108,15 @@ export default function EventDetailsScreen() {
                                 variant="outlined"
                                 backgroundColor="#FFFFFF"
                                 color="#171717"
+                                backgroundColor="#FFFFFF"
+                                color="#171717"
                                 onPress={() =>
                                     handleOpenUrl(
                                         event.registrationLink,
                                         "Registration link"
                                     )
                                 }
+                                style={{ flex: 1 }}
                                 style={{ flex: 1 }}
                             >
                                 Register
