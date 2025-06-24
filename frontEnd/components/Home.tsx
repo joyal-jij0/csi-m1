@@ -3,6 +3,7 @@ import {
     FlatList,
     View,
     TouchableOpacity,
+    Text,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -10,7 +11,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useState } from "react";
 import api from "@/api/api";
-import { Image } from "expo-image";
 import Toast from "react-native-toast-message";
 import EventCard from "./EventCard";
 
@@ -76,13 +76,9 @@ export default function Home() {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
-                    {/* <View style={styles.leftContainer}>
-                        <Image
-                            source={require("@/assets/images/csi.png")}
-                            style={styles.logo}
-                            contentFit="contain"
-                        />
-                    </View> */}
+                    <View style={styles.leftContainer}>
+                        <Text style={styles.text}>Zypher</Text>
+                    </View>
                     <TouchableOpacity onPress={() => router.push("/profile")}>
                         <MaterialCommunityIcons
                             name="account-circle-outline"
@@ -110,9 +106,14 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         paddingHorizontal: 16,
     },
+    text: {
+        color: "white",
+        fontSize: 25,
+        fontWeight: 'bold'
+    },
     header: {
         flexDirection: "row",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
         alignItems: "center",
         marginTop: 20,
         marginBottom: 10,
