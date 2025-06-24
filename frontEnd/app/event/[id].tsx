@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { Text } from "react-native";
@@ -26,9 +25,7 @@ export default function EventDetailsScreen() {
 
     if (!eventData) {
         return (
-            <SafeAreaView style={styles.container}>
                 <Text style={styles.errorText}>Event data not found.</Text>
-            </SafeAreaView>
         );
     }
 
@@ -46,7 +43,6 @@ export default function EventDetailsScreen() {
     const event = JSON.parse(eventData as string);
 
     return (
-        <SafeAreaView style={styles.container}>
             <ScrollView>
                 <Image
                     source={{ uri: event.image }}
@@ -113,15 +109,10 @@ export default function EventDetailsScreen() {
                     </View>
                 </BlurView>
             </ScrollView>
-        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#000",
-    },
     image: {
         width: width,
         height: 300,

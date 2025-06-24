@@ -10,7 +10,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "@/redux/store";
 import { RootState } from "@/redux/store";
-
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { getAccessToken } from "@/api/api";
 import { setAuthenticated } from "@/redux/features/authSlice";
@@ -97,7 +96,11 @@ function RootLayoutNav() {
                         />
                         <Stack.Screen
                             name="profile"
-                            options={{ headerTitle: "Profile" }}
+                            options={{
+                                headerShown: true,
+                                headerTitle: '',
+
+                            }}
                         />
                     </Stack>
                     <StatusBar style="light" />
