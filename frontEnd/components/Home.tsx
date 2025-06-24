@@ -76,13 +76,13 @@ export default function Home() {
         >
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
-                    <View style={styles.leftContainer}>
+                    {/* <View style={styles.leftContainer}>
                         <Image
                             source={require("@/assets/images/csi.png")}
                             style={styles.logo}
                             contentFit="contain"
                         />
-                    </View>
+                    </View> */}
                     <TouchableOpacity onPress={() => router.push("/profile")}>
                         <MaterialCommunityIcons
                             name="account-circle-outline"
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignItems: "center",
         marginTop: 20,
         marginBottom: 10,
