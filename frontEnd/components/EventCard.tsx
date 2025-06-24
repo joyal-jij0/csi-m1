@@ -7,11 +7,11 @@ import {
     ActivityIndicator,
     Linking,
     Alert,
+    TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from "tamagui";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 
@@ -125,13 +125,8 @@ function EventCard({ item }: { item: EventItem }) {
 
                             {item.isRegistrationLive &&
                                 item.registrationLink && (
-                                    <Button
-                                        size="$3"
-                                        theme="blue"
-                                        borderWidth="$0.5"
-                                        themeInverse
-                                        variant="outlined"
-                                        backgroundColor="black"
+                                    <TouchableOpacity
+                                        style={styles.registerButton}
                                         onPress={() =>
                                             handleOpenUrl(
                                                 item.registrationLink!,
@@ -139,8 +134,10 @@ function EventCard({ item }: { item: EventItem }) {
                                             )
                                         }
                                     >
-                                        Register
-                                    </Button>
+                                        <Text style={styles.registerButtonText}>
+                                            Register
+                                        </Text>
+                                    </TouchableOpacity>
                                 )}
                         </View>
                     </LinearGradient>
@@ -206,6 +203,22 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#FFFFFF",
         opacity: 0.9,
+    },
+    registerButton: {
+        backgroundColor: "#000000",
+        borderColor: "#007AFF",
+        borderWidth: 0.5,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 6,
+        minHeight: 32,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    registerButtonText: {
+        color: "#007AFF",
+        fontSize: 14,
+        fontWeight: "500",
     },
 });
 

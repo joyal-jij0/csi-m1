@@ -15,6 +15,8 @@ Notifications.setNotificationHandler({
         shouldPlaySound: true,
         shouldSetBadge: false, 
         shouldVibrate: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
         priority: Notifications.AndroidNotificationPriority.MAX,
     })
 })

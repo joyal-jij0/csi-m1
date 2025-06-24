@@ -11,13 +11,9 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "@/redux/store";
 import { RootState } from "@/redux/store";
 
-// Tamagui Dependencies
-import { createTamagui, TamaguiProvider, View } from "tamagui";
-import defaultConfig from "@tamagui/config/v3";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { getAccessToken } from "@/api/api";
 import { setAuthenticated } from "@/redux/features/authSlice";
-const config = createTamagui(defaultConfig);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -53,7 +49,8 @@ function RootLayoutNav() {
 
     useEffect(() => {
         if (!isInitialized){
-            router.replace("/signin");
+            // router.replace("/signin");
+            return
         } 
         const inAuthGroup = segments[0] === "(auth)";
         if (!isAuthenticated && !inAuthGroup) {
@@ -70,12 +67,12 @@ function RootLayoutNav() {
     };
 
     if (!isInitialized) {
-        null
+        // null
+        return null;
     }
 
     const content = (
         <SafeAreaProvider>
-            <TamaguiProvider config={config}>
                 <ThemeProvider value={DarkTheme}>
                     <Stack>
                         <Stack.Screen
@@ -105,7 +102,6 @@ function RootLayoutNav() {
                     </Stack>
                     <StatusBar style="light" />
                 </ThemeProvider>
-            </TamaguiProvider>
         </SafeAreaProvider>
     );
 

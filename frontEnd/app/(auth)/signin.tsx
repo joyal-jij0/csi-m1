@@ -1,184 +1,6 @@
-// import { Input, Text, View, YStack, Button, Spinner } from "tamagui";
-// import { LinearGradient } from "tamagui/linear-gradient";
-// import { Image } from "expo-image";
-// import React, { useState } from "react";
-// import { Dimensions } from "react-native";
-// import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
-// import OTPTextInput from "react-native-otp-textinput";
-// const screenWidth = Dimensions.get("window").width;
-// const screenHeight = Dimensions.get("window").height;
-
-// export default function Signin() {
-//   const [phoneInput, setPhoneInput] = useState<string>("");
-//   const animatedWidth = useSharedValue(screenWidth);
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   const [isImageSquare, setIsImageSquare] = useState(true);
-
-//   const handleContinue = () => {
-//     setIsLoading(true); 
-//     if (isImageSquare) {
-//       animatedWidth.value = withSpring(screenWidth / 2);
-//     } else {
-//       animatedWidth.value = withSpring(screenWidth);
-//     }
-//     setIsImageSquare(!isImageSquare);
-//   };
-
-//   return (
-//     <View>
-//       {/* <View height={screenWidth / 1} width={screenWidth}> */}
-//       <Animated.View
-//         style={{
-//           width: "100%",
-//           height: animatedWidth,
-//         }}
-//       >
-//         <View position="relative">
-//           <View width="100%" height="100%">
-//             <Image
-//               source={require("../../assets/images/csi_image2.jpeg")}
-//               style={{ height: "100%", width: "100%" }}
-//               contentFit="cover"
-//               contentPosition={"top"}
-//               transition={1000}
-//             />
-//           </View>
-//           <LinearGradient
-//             position="absolute"
-//             left={0}
-//             bottom={0}
-//             height="100%"
-//             width="100%"
-//             colors={["#00000000", "#000000"]}
-//             start={[0, 0]}
-//             end={[0, 1]}
-//           />
-//         </View>
-//       </Animated.View>
-
-//       <View paddingHorizontal={12} gap={24}>
-//         {!isLoading && (
-//           <View>
-//             <Text fontSize={24} fontWeight={700} color="#fff">
-//               Welcome to CSI Innowave
-//             </Text>
-//             <Text color="#fff">Nurture your mind, Unite your coding</Text>
-//           </View>
-//         )}
-
-//         <YStack gap={12}>
-//           {!isLoading ? (
-//             <View gap={4}>
-//               <Input
-//                 value={phoneInput}
-//                 onChangeText={(text) => setPhoneInput(text)}
-//                 backgroundColor="#000"
-//                 borderColor="#ffffff33"
-//                 focusStyle={{ borderColor: "#ffffff80" }}
-//                 maxLength={10}
-//                 color="#fff"
-//                 id="phone"
-//                 keyboardType="phone-pad"
-//                 placeholder="+91 7042XXXX78"
-//               />
-//             </View>
-//           ) : (
-//             <View
-//               display="flex"
-//               gap={8}
-//               justifyContent="center"
-//               // marginHorizontal={64}
-//             >
-//               <View paddingVertical={12} width="100%">
-//                 <Text fontSize={16} textAlign="center" color="#fff">
-//                   We've sent a verification code to
-//                 </Text>
-//                 <Text
-//                   fontSize={14}
-//                   textAlign="center"
-//                   color="#fff"
-//                   fontWeight={600}
-//                 >
-//                   +91 {phoneInput}
-//                 </Text>
-//               </View>
-//               <OTPTextInput
-//                 textInputStyle={{
-//                   backgroundColor: "#000",
-//                   borderWidth: 0.5,
-//                   borderBottomWidth: 0.5,
-//                   borderBottomColor: "#ffffff33",
-//                   borderRadius: 8,
-//                   margin: 0,
-//                   // marginBottom: 8,
-//                   // width: "15%",
-//                 }}
-//                 tintColor={"#ffffff80"}
-//                 containerStyle={{
-//                   borderColor: "#ffffff33",
-//                   marginHorizontal: 64,
-//                 }}
-//               />
-//             </View>
-//           )}
-
-//           {!isLoading && (
-//             <Button
-//               opacity={!isLoading ? (phoneInput.length > 9 ? 1 : 0.6) : 0.6}
-//               disabled={isLoading || !(phoneInput.length > 9)}
-//               onTouchStart={handleContinue}
-//             >
-//               {isLoading && <Spinner size="small" color="#000" />}
-//               Continue
-//             </Button>
-//           )}
-//           <View
-//             width="100%"
-//             display="flex"
-//             justifyContent="center"
-//             flexDirection="row"
-//           >
-//             {!isLoading ? (
-//               <React.Fragment>
-//                 <Text color="#ffffff66" marginRight={4}>
-//                   New to CSI App?
-//                 </Text>
-//                 <Text color="#3b82f6">Sign Up</Text>
-//               </React.Fragment>
-//             ) : (
-//               <React.Fragment>
-//                 <Text color="#ffffff66" marginRight={4}>
-//                   Resend OTP in
-//                 </Text>
-//                 <Text color="#3b82f6a1">14s</Text>
-//               </React.Fragment>
-//             )}
-//           </View>
-//         </YStack>
-//       </View>
-//     </View>
-//   );
-// }
-
-
-// const AppleIcon = () => (
-//     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-//         <Path
-//             d="M17.05 20.28a11.1 11.1 0 0 1-1.14.61 10.19 10.19 0 0 1-1.48.57 10.16 10.16 0 0 1-1.69.37 10.87 10.87 0 0 1-1.76.14 10.87 10.87 0 0 1-1.76-.14 10.16 10.16 0 0 1-1.69-.37 10.19 10.19 0 0 1-1.48-.57 11.1 11.1 0 0 1-1.14-.61 12.11 12.11 0 0 1-2.55-2.37A11.61 11.61 0 0 1 1 13.66a11.89 11.89 0 0 1-.85-2.39A11.85 11.85 0 0 1 0 8.68a11.85 11.85 0 0 1 .15-2.59A11.89 11.89 0 0 1 1 3.7a11.61 11.61 0 0 1 1.38-2.25A12.11 12.11 0 0 1 4.93.08a11.1 11.1 0 0 1 1.14-.61 10.19 10.19 0 0 1 1.48-.57A10.16 10.16 0 0 1 9.24 0a10.87 10.87 0 0 1 1.76-.14 10.87 10.87 0 0 1 1.76.14 10.16 10.16 0 0 1 1.69.37 10.19 10.19 0 0 1 1.48.57 11.1 11.1 0 0 1 1.14.61 12.11 12.11 0 0 1 2.55 2.37A11.61 11.61 0 0 1 21 6.17a11.89 11.89 0 0 1 .85 2.39 11.85 11.85 0 0 1 .15 2.59 11.85 11.85 0 0 1-.15 2.59 11.89 11.89 0 0 1-.85 2.39 11.61 11.61 0 0 1-1.38 2.25 12.11 12.11 0 0 1-2.55 2.37z"
-//             fill="#000000"
-//         />
-//         <Path
-//             d="M12 3.5c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4m0-1c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z"
-//             fill="#ffffff"
-//         />
-//     </Svg>
-// );
-
-import { Text, View, YStack, Button } from "tamagui";
-import { LinearGradient } from "tamagui/linear-gradient";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
@@ -190,6 +12,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import auth from '@react-native-firebase/auth'
 import Toast from "react-native-toast-message";
 import { MMKV } from "react-native-mmkv";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const GoogleIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -305,28 +128,19 @@ export default function Signin() {
             locations={[0, 0.99]}
         >
             <SafeAreaView>
-                <View
-                    style={{
-                        width: "100%",
-                        height: "60%",
-                    }}
-                >
-                    <View position="relative">
-                        <View width="100%" height="100%">
+                <View style={styles.imageContainer}>
+                    <View style={styles.imageWrapper}>
+                        <View style={styles.imageInner}>
                             <Image
                                 source={require("../../assets/images/csi_image.jpeg")}
-                                style={{ height: "100%", width: "100%" }}
+                                style={styles.image}
                                 contentFit="cover"
                                 contentPosition={"top"}
                                 transition={1000}
                             />
                         </View>
                         <LinearGradient
-                            position="absolute"
-                            left={0}
-                            bottom={0}
-                            height="100%"
-                            width="100%"
+                            style={styles.gradientOverlay}
                             colors={["#00000000", "#120821"]}
                             start={[0, 0]}
                             end={[0, 1]}
@@ -334,35 +148,91 @@ export default function Signin() {
                     </View>
                 </View>
 
-                <View paddingHorizontal={12} gap={24}>
+                <View style={styles.contentContainer}>
                     <View>
-                        <Text fontSize={24} fontWeight={700} color="#fff">
+                        <Text style={styles.title}>
                             Welcome to CSI Innowave
                         </Text>
-                        <Text color="#fff">
+                        <Text style={styles.subtitle}>
                             Nurture your mind, Unite your coding
                         </Text>
                     </View>
 
-                    <YStack gap={12}>
-                        <Button
-                            icon={GoogleIcon}
-                            theme="dark"
-                            backgroundColor="#ffffff"
-                            color="#000000"
-                            borderColor="#ffffff33"
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={[
+                                styles.googleButton,
+                                { opacity: isLoading ? 0.8 : 1 }
+                            ]}
                             onPress={handleSignIn}
                             disabled={isLoading}
-                            opacity={isLoading ? 0.8 : 1}
-                            height={48}
                         >
-                            {isLoading
-                                ? "Signing in..."
-                                : "Continue with Google"}
-                        </Button>
-                    </YStack>
+                            <GoogleIcon />
+                            <Text style={styles.buttonText}>
+                                {isLoading
+                                    ? "Signing in..."
+                                    : "Continue with Google"}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </SafeAreaView>
         </LinearGradient>
     );
 }
+
+const styles = StyleSheet.create({
+    imageContainer: {
+        width: "100%",
+        height: "60%",
+    },
+    imageWrapper: {
+        position: "relative",
+    },
+    imageInner: {
+        width: "100%",
+        height: "100%",
+    },
+    image: {
+        height: "100%",
+        width: "100%",
+    },
+    gradientOverlay: {
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        height: "100%",
+        width: "100%",
+    },
+    contentContainer: {
+        paddingHorizontal: 12,
+        gap: 24,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "700",
+        color: "#fff",
+    },
+    subtitle: {
+        color: "#fff",
+    },
+    buttonContainer: {
+        gap: 12,
+    },
+    googleButton: {
+        backgroundColor: "#ffffff",
+        borderColor: "#ffffff33",
+        borderWidth: 1,
+        height: 48,
+        borderRadius: 8,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+    },
+    buttonText: {
+        color: "#000000",
+        fontSize: 16,
+        fontWeight: "500",
+    },
+});

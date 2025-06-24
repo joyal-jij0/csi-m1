@@ -6,13 +6,13 @@ import {
     Linking,
     Alert,
     ActivityIndicator,
+    TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { Text } from "react-native";
-import { Button } from "tamagui";
 import { Image } from "expo-image";
 import { useState } from "react";
 
@@ -80,47 +80,35 @@ export default function EventDetailsScreen() {
 
                     <View style={styles.buttonContainer}>
                         {event.ruleBookLink && (
-                            <Button
-                                size="$3"
-                                borderColor="#262626"
-                                borderWidth="$0.5"
-                                themeInverse
-                                variant="outlined"
-                                backgroundColor="#171717"
+                            <TouchableOpacity
+                                style={styles.rulesButton}
                                 onPress={() =>
                                     handleOpenUrl(
                                         event.ruleBookLink,
                                         "Rule book link"
                                     )
                                 }
-                                style={{ flex: 1, marginRight: 8 }}
                             >
-                                Rules
-                            </Button>
+                                <Text style={styles.rulesButtonText}>
+                                    Rules
+                                </Text>
+                            </TouchableOpacity>
                         )}
 
                         {event.isRegistrationLive && event.registrationLink && (
-                            <Button
-                                size="$3"
-                                borderColor="#262626"
-                                borderWidth="$0.5"
-                                themeInverse
-                                variant="outlined"
-                                backgroundColor="#FFFFFF"
-                                color="#171717"
-                                backgroundColor="#FFFFFF"
-                                color="#171717"
+                            <TouchableOpacity
+                                style={styles.registerButton}
                                 onPress={() =>
                                     handleOpenUrl(
                                         event.registrationLink,
                                         "Registration link"
                                     )
                                 }
-                                style={{ flex: 1 }}
-                                style={{ flex: 1 }}
                             >
-                                Register
-                            </Button>
+                                <Text style={styles.registerButtonText}>
+                                    Register
+                                </Text>
+                            </TouchableOpacity>
                         )}
                     </View>
                 </BlurView>
@@ -177,12 +165,44 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        gap: 16,
+    },
+    rulesButton: {
+        flex: 1,
+        backgroundColor: "#171717",
+        borderColor: "#262626",
+        borderWidth: 0.5,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    rulesButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "500",
+    },
+    registerButton: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#262626",
+        borderWidth: 0.5,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    registerButtonText: {
+        color: "#171717",
+        fontSize: 16,
+        fontWeight: "500",
     },
     spinner: {
         position: "absolute",
         top: "25%",
         left: "50%",
-        // Adjust the translation so the spinner is centered
         transform: [{ translateX: -12 }, { translateY: -12 }],
     },
 });

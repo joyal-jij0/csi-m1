@@ -16,7 +16,7 @@ interface Boundaries {
     verticalBoundary: number;
 }
 
-export default function Explore(): JSX.Element {
+export default function Explore(): React.JSX.Element {
     const pan = useRef(new Animated.ValueXY()).current;
     const scale = useRef(new Animated.Value(1)).current;
     const lastScale = useRef<number>(1);

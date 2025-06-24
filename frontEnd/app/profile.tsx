@@ -3,9 +3,14 @@ import { AppDispatch } from "@/redux/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    TouchableOpacity,
+} from "react-native";
 import { useDispatch } from "react-redux";
-import { Button } from "tamagui";
 import { logout } from "@/redux/features/authSlice";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -149,18 +154,14 @@ export default function Profile() {
                                     {profile!.branch.toUpperCase()}
                                 </Text>
 
-                                <Button
+                                <TouchableOpacity
                                     onPress={handleLogout}
-                                    style={{
-                                        backgroundColor: "#DC2626",
-                                        marginTop: 48,
-                                        color: "white",
-                                        width: "100%",
-                                        paddingVertical: 8,
-                                    }}
+                                    style={styles.logoutButton}
                                 >
-                                    Logout
-                                </Button>
+                                    <Text style={styles.logoutButtonText}>
+                                        Logout
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         )}
                     </View>
@@ -247,5 +248,19 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,0.1)",
         padding: 12,
         borderRadius: 10,
+    },
+    logoutButton: {
+        backgroundColor: "#DC2626",
+        marginTop: 48,
+        width: "100%",
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    logoutButtonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "500",
     },
 });
