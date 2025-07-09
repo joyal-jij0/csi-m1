@@ -123,7 +123,7 @@ export default function onBoardingForm({ onBack }: SignupFormProps) {
                     <KeyboardAvoidingView>
                         <View style={styles.formContainer}>
                             <Text style={styles.header}>
-                                Sign Up for CSI Innowave
+                                Sign Up for Zypher
                             </Text>
                             <Text style={styles.subHeader}>
                                 Join our community of developers

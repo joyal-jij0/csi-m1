@@ -151,7 +151,7 @@ export default function Signin() {
                 <View style={styles.contentContainer}>
                     <View>
                         <Text style={styles.title}>
-                            Welcome to CSI Innowave
+                            Welcome to Zypher
                         </Text>
                         <Text style={styles.subtitle}>
                             Nurture your mind, Unite your coding
